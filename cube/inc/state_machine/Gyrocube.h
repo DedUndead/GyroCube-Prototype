@@ -39,10 +39,11 @@ private:
     void state_notification(const Event& e);
 
     void clear();
-    void set_state(uint8_t side_index);
+    void set_state(uint8_t state_index);
 
     int timer;                       // Timer for filtering tick events
     bool update_required;            // Flag identifies external changes
+    bool function_changed;           // Flag identifes change of the function
     uint8_t current_side;            // Current cube's placement
     side_settings settings[N_SIDES]; // Setting individual for each side
 
