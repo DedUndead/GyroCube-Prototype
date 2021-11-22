@@ -33,7 +33,19 @@ int I2C::read(const uint& slave_addr, const uint8_t& reg_addr, uint8_t* buffer, 
         return -1;
     }
 
-    return i2c_read_blocking(i2c, slave_addr, buffer, size, true);
+    return i2c_read_blocking(i2c, slave_addr, buffer, size, false);
+}
+
+/* @brief Read data from specified slave's
+ * Use for reading without specifyng register
+ * @param slave_addr Slave address
+ * @param buffer     Buffer to read to
+ * @param size       Size of buffer
+ * @return           Number of bytes read, negative on error
+ */
+int I2C::read(const uint& slave_addr, uint8_t* buffer, const uint8_t size)
+{
+    return i2c_read_blocking(i2c, slave_addr, buffer, size, false);
 }
 
 /* @brief Write data to specified slave's register

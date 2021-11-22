@@ -5,7 +5,8 @@
 #include "interface/i2c.h"
 
 #define DEFAULT_ADDRESS   0x27
-#define DATA_LENGTH_BYTES 2
+#define STATUS_BITS       0xC0
+#define DATA_LENGTH_BYTES 4
 
 class Hih6020 {
 public:
@@ -17,8 +18,7 @@ private:
 
     I2C* i2c;
     uint address;
-    uint8_t humid_data[DATA_LENGTH_BYTES];
-    uint8_t temp_data[DATA_LENGTH_BYTES];
+    uint8_t data[DATA_LENGTH_BYTES];
 };
 
 
