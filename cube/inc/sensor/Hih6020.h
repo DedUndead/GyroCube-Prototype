@@ -6,7 +6,13 @@
 
 #define DEFAULT_ADDRESS   0x27
 #define STATUS_BITS       0xC0
+#define MASK_STATUS       0x3F
 #define DATA_LENGTH_BYTES 4
+#define ERROR_STATUS      0x65
+#define SCALING_FACTOR    (0x4000 - 2)
+#define HUMIDITY_MAX      100
+#define TEMPERATURE_MAX   125
+#define TEMPERATURE_MIN   -40
 
 class Hih6020 {
 public:
@@ -15,6 +21,8 @@ public:
     int read_temperature();
 private:
     bool fetch_data();
+    int convert_humidity(uint16_t humidity);
+    int convert_temperature(uint16_t temperature);
 
     I2C* i2c;
     uint address;
