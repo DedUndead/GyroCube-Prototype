@@ -43,7 +43,7 @@ int Hih6020::read_temperature()
 bool Hih6020::fetch_data()
 {
     // Fetch data, confirm read status
-    if (i2c->read(address, data, DATA_LENGTH_BYTES) != 0) {
+    if (i2c->read(address, data, DATA_LENGTH_BYTES) <= 0) {
         return false;
     }
 
