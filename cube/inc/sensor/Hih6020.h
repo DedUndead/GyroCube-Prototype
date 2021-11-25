@@ -21,11 +21,11 @@ public:
     int read_temperature();
 private:
     bool fetch_data();
-    int convert_humidity(uint16_t humidity);
-    int convert_temperature(uint16_t temperature);
+    int convert_humidity(const uint16_t& humidity);
+    int convert_temperature(const uint16_t& temperature);
 
     I2C* i2c;
-    uint address;
+    uint8_t address;
     uint8_t data[DATA_LENGTH_BYTES];
 };
 

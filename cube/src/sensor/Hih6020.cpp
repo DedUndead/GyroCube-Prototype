@@ -1,5 +1,6 @@
 #include "sensor/Hih6020.h"
 #include "interface/i2c.h"
+#include "stdio.h"
 
 Hih6020::Hih6020(I2C* i2c_, uint address_) : 
     i2c(i2c_),
@@ -16,7 +17,7 @@ int Hih6020::read_humidity()
     if (!fetch_data()) return ERROR_STATUS;
 
     // According to honeywell data organization
-    uint16_t raw_reading = ((data[0] & MASK_STATUS) << 8) + data[1];
+    uint16_t raw_reading = ((data[0] & MASK_STATUS) << 8) | data[1];
 
     return convert_humidity(raw_reading);
 }
@@ -31,7 +32,7 @@ int Hih6020::read_temperature()
     if (!fetch_data()) return ERROR_STATUS;
 
     // According to honeywell data organization
-    uint16_t raw_reading = (data[2] << 6) + (data[3] >> 2);
+    uint16_t raw_reading = (data[2] << 6) | (data[3] >> 2);
 
     return convert_temperature(raw_reading);
 }
@@ -43,12 +44,18 @@ int Hih6020::read_temperature()
 bool Hih6020::fetch_data()
 {
     // Fetch data, confirm read status
+    if (i2c->wake(address) <= 0) {
+        return false;
+    }
+
+    sleep_ms(40); // Wait for the measurement
+
     if (i2c->read(address, data, DATA_LENGTH_BYTES) <= 0) {
         return false;
     }
 
     // Check status of the device
-    if (data[0] & STATUS_BITS != 0) {
+    if ((data[0] & STATUS_BITS) != 0) {
         return false;
     }
 
@@ -60,9 +67,9 @@ bool Hih6020::fetch_data()
  * @param humidity Raw reading
  * @return         Actual humidity value
  */
-int convert_humidity(uint16_t humidity)
+int Hih6020::convert_humidity(const uint16_t& humidity)
 {
-    return humidity / SCALING_FACTOR * HUMIDITY_MAX;
+    return humidity / (float) SCALING_FACTOR * HUMIDITY_MAX;
 }
 
 /**
@@ -70,7 +77,7 @@ int convert_humidity(uint16_t humidity)
  * @param temperature Raw reading
  * @return            Actual temperature value
  */
-int convert_temperature(uint16_t temperature)
+int Hih6020::convert_temperature(const uint16_t& temperature)
 {
-    return temperature / SCALING_FACTOR * (TEMPERATURE_MAX - TEMPERATURE_MIN) + TEMPERATURE_MIN;
+    return temperature / (float) SCALING_FACTOR * (TEMPERATURE_MAX - TEMPERATURE_MIN) + TEMPERATURE_MIN;
 }
