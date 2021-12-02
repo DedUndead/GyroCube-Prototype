@@ -12,11 +12,17 @@ set(CMAKE_CXX_STANDARD 17)
 # Creates a pico-sdk subdirectory in our project for the libraries
 pico_sdk_init()
 
+add_executable(${PROJECT_NAME})
+
+# generate the header file into the source tree as it is included in the RP2040 datasheet
+pico_generate_pio_header(${PROJECT_NAME} src/actuator/ws2812.pio OUTPUT_DIR inc/actuator)
+
 # Executables
-add_executable(${PROJECT_NAME} 
+target_sources(${PROJECT_NAME} PRIVATE
     src/main.cpp
-    inc/interface/i2c.h src/interface/i2c.cpp
-    inc/sensor/Hih6020.h src/sensor/Hih6020.cpp
+    inc/interface/i2c.h        src/interface/i2c.cpp
+    inc/sensor/Hih6020.h       src/sensor/Hih6020.cpp
+    inc/actuator/NeoPixel.h    src/actuator/NeoPixel.cpp
 )
 
 # Create map/bin/hex/uf2 files
@@ -30,7 +36,18 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 target_link_libraries(${PROJECT_NAME} 
     pico_stdlib
     hardware_i2c
+    hardware_pio
+    hardware_adc
 )
+
+# Additionally generate python and hex pioasm outputs for inclusion in the RP2040 datasheet
+add_custom_target(pio_ws2812_datasheet DEPENDS inc/actuator/ws2812.py)
+add_custom_command(
+    OUTPUT inc/actuator/ws2812.py
+    DEPENDS src/actuator/ws2812.pio
+    COMMAND Pioasm -o python src/actuator/ws2812.pio inc/actuator/ws2812.py
+)
+add_dependencies(${PROJECT_NAME} pio_ws2812_datasheet)
 
 pico_enable_stdio_usb(${PROJECT_NAME} 1)
 pico_enable_stdio_uart(${PROJECT_NAME} 0)
