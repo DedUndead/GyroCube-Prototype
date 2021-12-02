@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include "interface/i2c.h"
+#include "hardware/pio.h"
 #include "sensor/Hih6020.h"
+#include "actuator/NeoPixel.h"
 
 #define BAUDRATE 250 * 1000
 #define SDA_PIN 0 
@@ -10,6 +12,12 @@
 int main() {
     stdio_init_all();
     
+#if 1
+    NeoPixel leds(pio0, 0, 30);
+    leds.fill(0, 255, 0);
+#endif
+
+#if 0
     I2C i2c(i2c0, BAUDRATE, SDA_PIN, SCL_PIN);
     Hih6020 temp_humid_sensor(&i2c);
 
@@ -26,4 +34,5 @@ int main() {
 
         sleep_ms(2000);
     }   
+#endif
 }
