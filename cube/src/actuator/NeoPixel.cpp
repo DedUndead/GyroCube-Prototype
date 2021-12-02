@@ -6,12 +6,11 @@
 #include "actuator/ws2812.pio.h"
 #include "actuator/NeoPixel.h"
 
-/* @brief ws2812 leds wrapper class
+/* @brief WS2812 Leds wrapper class
  * @param pio_hw  Pointer to hardware, pio0/pio1
  * @param pin     Target pio pin
  * @param length  Amount of leds in the circuit
  */
-
 NeoPixel::NeoPixel(PIO pio_hw_, uint8_t pin_, uint8_t length_) : 
     pio_hw(pio_hw_),
     pin(pin_),
@@ -37,7 +36,7 @@ NeoPixel::NeoPixel(PIO pio_hw_, uint8_t pin_, uint8_t length_) :
 void NeoPixel::fill(uint8_t red, uint8_t green, uint8_t blue) 
 {
     for(uint8_t i = 0; i < length; i++) {
-            put_pixel(get_grb(red, green, blue));
+        put_pixel(get_grb(red, green, blue));
     }
 }
 
@@ -50,9 +49,10 @@ void NeoPixel::put_pixel(uint32_t pixel_grb)
 }
 
 /* @brief Handles the rgb to grb transformation
- * @param r   Sets the intensity of the color red 
+ * @param r Sets the intensity of the color red 
  * @param g Sets the intensity of the color green
- * @param b  Sets the intensity of the color blue
+ * @param b Sets the intensity of the color blue
+ * @return  32 bit value that corresponds to grb color code
  */
 uint32_t NeoPixel::get_grb(uint8_t red, uint8_t green, uint8_t blue) 
 {
