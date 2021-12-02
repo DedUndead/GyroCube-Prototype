@@ -12,12 +12,15 @@
 int main() {
     stdio_init_all();
     
-#if 1
+#if 1 // NeoPixel interface example
     NeoPixel leds(pio0, 0, 30);
     leds.fill(0, 255, 0);
+    
+    // Idle loop
+    while (true) sleep_ms(1000);
 #endif
 
-#if 0
+#if 0 // I2C and sensor interface examples
     I2C i2c(i2c0, BAUDRATE, SDA_PIN, SCL_PIN);
     Hih6020 temp_humid_sensor(&i2c);
 
