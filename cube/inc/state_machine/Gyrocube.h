@@ -26,6 +26,7 @@ class Gyrocube {
 public:
     Gyrocube(Hih6020* sensor_, NeoPixel* leds_);
     void handle_state(const Event& e);
+    void update_settings(uint8_t side, side_settings new_setting);
 private:
     state_ptr current_state;
     void set_state(state_ptr new_state);

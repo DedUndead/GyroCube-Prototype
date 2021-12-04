@@ -40,6 +40,12 @@ void Gyrocube::handle_state(const Event& e)
     (this->*current_state)(e);
 }
 
+void Gyrocube::update_settings(uint8_t side, side_settings new_setting)
+{
+    settings[side] = new_setting;
+    update_required = true;
+}
+
 /**
  * @brief Startup event
  * Waits for the hub's ACK
@@ -105,6 +111,7 @@ void Gyrocube::state_lamp(const Event& e)
         case Event::eTick:
             if (update_required) {
                 leds->fill(settings[current_side].color);
+                update_required = false;
             }
 
             break;
