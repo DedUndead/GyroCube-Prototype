@@ -16,16 +16,27 @@ NeoPixel::NeoPixel(PIO pio_hw_, uint8_t pin_, uint8_t length_) :
     pin(pin_),
     length(length_)
 {
-    // Set state machine to 0
-    int sm = 0;
-
     // Sets the insturctions on the pio hardware
     uint offset = pio_add_program(pio_hw, &ws2812_program);
 
-
     // Initialize the hardware
-    ws2812_program_init(pio_hw, sm, offset, pin, 800000, false);
+    ws2812_program_init(pio_hw, 0, offset, pin, 800000, false);
 
+}
+
+/* @brief Sets the color of the leds
+ * Do nothing if format is incorrect
+ * @param color_code Color code in html format
+ */
+void NeoPixel::fill(char* color_code)
+{
+    unsigned int red;
+    unsigned int green;
+    unsigned int blue;
+
+    if (sscanf(color_code, "#%2x%2x%2x", &red, &green, &blue)) {
+        NeoPixel::fill(red, green, blue);
+    }
 }
 
 /* @brief Sets the color of the leds
@@ -39,6 +50,8 @@ void NeoPixel::fill(uint8_t red, uint8_t green, uint8_t blue)
         put_pixel(get_grb(red, green, blue));
     }
 }
+
+void NeoPixel::gradient() {}
 
 /* @brief Handles the led address shifting
  * @param pixel_grb Takes the color binary code
