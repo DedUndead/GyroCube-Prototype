@@ -1,21 +1,26 @@
+#include <string.h>
 #include "state_machine/Event.h"
 #include "sensor/Hih6020.h"
 #include "actuator/NeoPixel.h"
 #include "state_machine/Gyrocube.h"
 
 Gyrocube::Gyrocube(Hih6020* sensor_, NeoPixel* leds_) :
-    update_required(false), timer(0), sensor(sensor_), leds(leds_)
+    update_required(false), timer(0), sensor(sensor_), leds(leds_),
+    functional_states { 
+        &Gyrocube::state_idle, &Gyrocube::state_lamp,
+        &Gyrocube::state_temp, &Gyrocube::state_humid,
+        &Gyrocube::state_weather, &Gyrocube::state_notification
+    }
 {
     set_state(&Gyrocube::startup);
 
     // TODO: Replace initial settings with file saved settings
     // Move to function
-    settings[0] = { 0, "#000000", 0 };  // Default idle
-    settings[1] = { 1, "#ff0000", 1 };  // Default lamp
-    settings[2] = { 2, "#000000", 23 }; // Default temp
-    settings[3] = { 3, "#ff0000", 25 }; // Default humid
-    settings[4] = { 4, "#ffff00", 0 };  // Default weather
-    settings[5] = { 5, "#ff0000", 2 };  // Default notification
+    for (uint8_t i = 0; i < N_SIDES; i++) {
+        settings[i].function = i;
+        strcpy(settings[i].color, "#ff0000");
+        settings[i].target = 25;
+    }
 
     current_side = 0;
 }
@@ -54,8 +59,6 @@ void Gyrocube::startup(const Event& e)
 {
     switch (e.type) {
         case Event::eEnter:
-            // Clear previous effects
-
             break;
         case Event::eTick:
             if (timer == 0) {
@@ -63,13 +66,13 @@ void Gyrocube::startup(const Event& e)
                 timer++;
             }
             else {
-                // Leds off
+                leds->fill("#000000");
                 timer = 0;
             }
 
             break;
         case Event::eNotify:
-            // Go to execution state
+            set_state(e.value);
 
             break;
         default:
@@ -85,15 +88,13 @@ void Gyrocube::state_idle(const Event& e)
 {
     switch (e.type) {
         case Event::eEnter:
-            // Clear previous effects
-
             break;
         case Event::eReconnect:
             set_state(&Gyrocube::startup);
 
             break;
         case Event::eChange:
-            // Go to execution state
+            set_state(e.value);
 
             break;
         default:
@@ -105,10 +106,9 @@ void Gyrocube::state_lamp(const Event& e)
 {
     switch (e.type) {
         case Event::eEnter:
-            // Clear previous effects
-
             break;
         case Event::eTick:
+            // Change color if update in settings is present
             if (update_required) {
                 leds->fill(settings[current_side].color);
                 update_required = false;
@@ -120,8 +120,8 @@ void Gyrocube::state_lamp(const Event& e)
 
             break;
         case Event::eChange:
-            // Go to execution state
-            
+            set_state(e.value);
+
             break;
         default:
             break;
@@ -136,8 +136,6 @@ void Gyrocube::state_temp(const Event& e)
 {
     switch (e.type) {
         case Event::eEnter:
-            // Clear previous effects
-
             break;
         case Event::eTick:
             if (sensor->read_temperature() != settings[current_side].target) {
@@ -148,7 +146,7 @@ void Gyrocube::state_temp(const Event& e)
 
             break;
         case Event::eChange:
-            // Go to execution state
+            set_state(e.value);
             
             break;
         default:
@@ -164,8 +162,6 @@ void Gyrocube::state_humid(const Event& e)
 {
     switch (e.type) {
         case Event::eEnter:
-            // Clear previous effects
-
             break;
         case Event::eTick:
             if (sensor->read_humidity() != settings[current_side].target) {
@@ -176,7 +172,7 @@ void Gyrocube::state_humid(const Event& e)
 
             break;
         case Event::eChange:
-            // Go to execution state
+            set_state(e.value);
             
             break;
         default:
@@ -192,11 +188,10 @@ void Gyrocube::state_weather(const Event& e)
 {
     switch (e.type) {
         case Event::eEnter:
-            // Clear previous effects
-
             break;
         case Event::eNotify:
-            // Change weather based on notification value
+            if (e.value == 0) leds->fill("#ffff00");
+            // Other settings based on weather
 
             break;
         case Event::eReconnect:
@@ -204,7 +199,7 @@ void Gyrocube::state_weather(const Event& e)
 
             break;
         case Event::eChange:
-            // Go to execution state
+            set_state(e.value);
             
             break;
         default:
@@ -212,12 +207,14 @@ void Gyrocube::state_weather(const Event& e)
     }
 }
 
+/**
+ * @brief Notification state
+ * Displays notification with motor and leds
+ */
 void Gyrocube::state_notification(const Event& e)
 {
     switch (e.type) {
         case Event::eEnter:
-            // Clear previous effects
-
             break;
         case Event::eNotify:
             // Notify based on settings
@@ -228,9 +225,30 @@ void Gyrocube::state_notification(const Event& e)
 
             break;
         case Event::eChange:
-            // Go to execution state
+            set_state(e.value);
             
             break;
         default:
             break; 
+    }
+}
+
+/**
+ * @brief Overload of set_state function
+ * Changes the state of state machine based on the new cube's side
+ * Updates current side of the cube
+ * @param side_index Index of the side the clube was placed on
+ */
+void Gyrocube::set_state(uint8_t side_index)
+{
+    current_side = side_index;
+    set_state(functional_states[current_side]);
+}
+
+/**
+ * @brief Clear actuators from all current effects
+ */
+void Gyrocube::clear()
+{
+    leds->fill("#000000");
 }

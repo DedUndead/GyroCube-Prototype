@@ -37,14 +37,20 @@ private:
     void state_humid(const Event& e);
     void state_weather(const Event& e);
     void state_notification(const Event& e);
-    void reconfigure(const Event& e);
 
-    int timer;
-    bool update_required;
-    uint8_t current_side;
-    side_settings settings[N_SIDES];
+    void clear();
+    void set_state(uint8_t side_index);
+
+    int timer;                       // Timer for filtering tick events
+    bool update_required;            // Flag identifies external changes
+    uint8_t current_side;            // Current cube's placement
+    side_settings settings[N_SIDES]; // Setting individual for each side
+
     Hih6020* sensor;
     NeoPixel* leds;
+
+    // State pointer array to quickly call needed state based on side's setting
+    void (Gyrocube::*functional_states[N_SIDES])(const Event&);
 };
 
 
