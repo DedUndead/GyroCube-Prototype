@@ -30,10 +30,16 @@ private:
     state_ptr current_state;
     void set_state(state_ptr new_state);
     void startup(const Event& e);
-    void executing(const Event& e);
+    void state_idle(const Event& e);
+    void state_lamp(const Event& e);
+    void state_temp(const Event& e);
+    void state_humid(const Event& e);
+    void state_weather(const Event& e);
+    void state_notification(const Event& e);
     void reconfigure(const Event& e);
 
     int timer;
+    bool update_required;
     uint8_t current_side;
     side_settings settings[N_SIDES];
     Hih6020* sensor;
