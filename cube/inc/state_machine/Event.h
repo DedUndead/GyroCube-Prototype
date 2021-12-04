@@ -11,7 +11,7 @@
  */
 class Event {
 public: 
-    enum event_type { eEnter, eExit, eTick, eReconfigure, eReconnect };
+    enum event_type { eEnter, eExit, eTick, eNotify, eChange, eReconnect };
     Event(event_type e, int v = 0) : type(e), value(v) {};
     event_type type;
     int value;
