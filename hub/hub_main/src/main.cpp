@@ -16,6 +16,13 @@
 #include "uart/lpcuart.h"
 #include "mqtt/mqtt.h"
 
+#define MQTT_IP              (char *)"MQTT_IP_HERE"
+#define MQTT_PORT            21883
+#define NETWORK_SSID         (char *)"NETWORK_SSID_HERE"
+#define NETWORK_PASS         (char *)"NETWORK_PASS_HERE"
+#define MQTT_TOPIC_RECEIVE   (const char *)"/gyro/web"
+#define MQTT_TOPIC_SEND      (const char *)"/gyro/hub"
+
 void set_systick(const int& freq);
 void mqtt_message_handler(MessageData* data);
 void ERROR_CONDITION();
@@ -43,12 +50,30 @@ int main(void) {
 #endif
 #endif
 
+    /* Configure MQTT */
+    MQTT mqtt(mqtt_message_handler);
+    mqtt.connect(NETWORK_SSID, NETWORK_PASS, MQTT_IP, MQTT_PORT);
+    mqtt.subscribe(MQTT_TOPIC_RECEIVE);
+
     /* Remove after debugging finished */
 	LpcPinMap none = {-1, -1}; // unused pin has negative values in it
 	LpcPinMap txpin = { 0, 18 }; // transmit pin that goes to debugger's UART->USB converter
 	LpcPinMap rxpin = { 0, 13 }; // receive pin that goes to debugger's UART->USB converter
 	LpcUartConfig cfg = { LPC_USART0, 115200, UART_CFG_DATALEN_8 | UART_CFG_PARITY_NONE | UART_CFG_STOPLEN_1, false, txpin, rxpin, none, none };
 	LpcUart uart(cfg);
+
+	while (true) {
+		// Bridge the message from web to cube
+		if (mqtt_message_arrived) {
+			// Send to cube
+			mqtt_message_arrived = false;
+		}
+
+		// Bridge the message from cube to web
+		// if (zigbee_message_arrived) {
+			//mqtt.send(message);
+		//}
+	}
 
     return 0;
 }
