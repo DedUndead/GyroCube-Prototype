@@ -14,10 +14,26 @@ int main() {
     
 #if 1 // NeoPixel interface example
     NeoPixel leds(pio0, 0, 30);
-    leds.fill(0, 255, 0);
     
-    // Idle loop
-    while (true) sleep_ms(1000);
+    while (true) {
+        // "Appearing" effect
+        for (int i = 10; i < 250; i += 10) {
+            leds.fill(0, 0, i);
+            sleep_ms(50);
+        }
+        sleep_ms(1000);
+        leds.fill(0, 0, 0);
+        sleep_ms(1000);
+
+        // Gradient effect
+        for (float i = 0; i <= 1; i += 0.1) {
+            leds.interpolate(0x00ff00, 0xff0000, i);
+            sleep_ms(50);
+        }
+        sleep_ms(1000);
+        leds.fill(0, 0, 0);
+        sleep_ms(1000);
+    }
 #endif
 
 #if 0 // I2C and sensor interface examples

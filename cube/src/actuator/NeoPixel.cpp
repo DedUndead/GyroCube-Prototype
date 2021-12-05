@@ -51,8 +51,6 @@ void NeoPixel::fill(uint8_t red, uint8_t green, uint8_t blue)
     }
 }
 
-void NeoPixel::gradient() {}
-
 /* @brief Handles the led address shifting
  * @param pixel_grb Takes the color binary code
 */
@@ -69,7 +67,30 @@ void NeoPixel::put_pixel(uint32_t pixel_grb)
  */
 uint32_t NeoPixel::get_grb(uint8_t red, uint8_t green, uint8_t blue) 
 {
-    return  ((uint32_t)(red) << 8) | 
+    return  ((uint32_t)(red) << 8)    | 
             ((uint32_t)(green) << 16) | 
             ((uint32_t)(blue));
+}
+
+/**
+ * @brief Interpolate two RGB colors and fill the led sequence
+ * Adopted from Stackoverflow by Carlson Barcellos, 2014 Jan 9
+ * @param color1   Starting color
+ * @param color2   Ending color
+ * @param fraction Interpolation percent
+ */
+void NeoPixel::interpolate(uint32_t color1, uint32_t color2, float fraction)
+{
+    unsigned char r1 = (color1 >> 16) & 0xff;
+    unsigned char r2 = (color2 >> 16) & 0xff;
+    unsigned char g1 = (color1 >> 8) & 0xff;
+    unsigned char g2 = (color2 >> 8) & 0xff;
+    unsigned char b1 = color1 & 0xff;
+    unsigned char b2 = color2 & 0xff;
+
+    NeoPixel::fill(
+        (uint8_t)((r2 - r1) * fraction + r1),
+        (uint8_t)((g2 - g1) * fraction + g1),
+        (uint8_t)((b2 - b1) * fraction + b1)
+    );
 }
