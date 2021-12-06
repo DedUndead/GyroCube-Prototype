@@ -26,6 +26,8 @@ target_sources(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/src/interface/i2c.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/sensor/Hih6020.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/actuator/NeoPixel.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/inc/state_machine/Event.h
+    ${CMAKE_CURRENT_LIST_DIR}/src/state_machine/Gyrocube.cpp
 )
 
 # Create map/bin/hex/uf2 files
