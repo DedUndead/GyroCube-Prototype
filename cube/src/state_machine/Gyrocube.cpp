@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdio.h>
+#include <math.h>
 #include "state_machine/Event.h"
 #include "sensor/Hih6020.h"
 #include "actuator/VibrationMotor.h"
@@ -105,18 +106,7 @@ void Gyrocube::startup(const Event& e)
         case Event::eEnter:
             break;
         case Event::eTick:
-            // Fading effect on each tick while connecting
-            if (timer == 0) {
-                for (int i = 10; i < 250; i += 10) {
-                    leds->fill(0, 0, i);
-                    sleep_ms(50);
-                }
-                timer++;
-            }
-            else {
-                leds->fill(0, 0, 0);
-                timer = 0;
-            }
+            appear(CONNECTION_COLOR);
 
             break;
         case Event::eNotify:
@@ -210,6 +200,8 @@ void Gyrocube::state_temp(const Event& e)
                 set_state(settings[current_side].function);
             }
 
+            display_temperature();
+
             break;
         case Event::eReconnect:
             set_state(&Gyrocube::startup);
@@ -240,6 +232,8 @@ void Gyrocube::state_humid(const Event& e)
             if (function_changed) {
                 set_state(settings[current_side].function);
             }
+
+            display_temperature();
 
             break;
         case Event::eReconnect:
@@ -334,6 +328,73 @@ void Gyrocube::clear()
 }
 
 /**
+ * @brief Display temperature to the user using actuators
+ * Display error color signal in case  of hw failure
+ */
+void Gyrocube::display_temperature()
+{
+    int temperature = sensor->read_temperature();
+    // Display error
+    if (temperature == ERROR_STATUS) {
+        appear(I2C_ERROR_COLOR);
+        vibrate();
+        return;
+    }
+    
+    // Calculate difference value and make sure it doesnt exceed limit
+    float difference = settings[current_side].target - temperature;
+    if      (difference > TEMP_MAX_DIFFERENCE)      difference = TEMP_MAX_DIFFERENCE;
+    else if (difference < -1 * TEMP_MAX_DIFFERENCE) difference = -1 * TEMP_MAX_DIFFERENCE;
+
+    // Temperature matches target
+    if (difference == 0) {
+        leds->fill(0x00, 0xff, 0x00);
+    }
+    // Green->red gradient
+    else if (difference > 0) {
+        leds->interpolate(
+            0x00ff00, 0xff0000, abs(difference) / TEMP_MAX_DIFFERENCE
+        );
+    }
+    // Green->blue gradient
+    else {
+        leds->interpolate(
+            0x00ff00, 0x0000ff, abs(difference) / TEMP_MAX_DIFFERENCE
+        );
+    }
+}
+
+/**
+ * @brief Display humidity to the user using actuators
+ * Display error color signal in case  of hw failure
+ */
+void Gyrocube::display_humidity()
+{
+    int humidity = sensor->read_humidity();
+    // Display error
+    if (humidity == ERROR_STATUS) {
+        appear(I2C_ERROR_COLOR);
+        vibrate();
+        return;
+    }
+    
+    // Calculate difference value and make sure it doesnt exceed limit
+    float difference = abs(settings[current_side].target - humidity);
+    if (difference > HUMID_MAX_DIFFERENCE) difference = HUMID_MAX_DIFFERENCE;
+
+    // Humidity matches target
+    if (difference == 0) {
+        leds->fill(0x00, 0xff, 0x00);
+    }
+    // Green->red gradient
+    else {
+        leds->interpolate(
+            0x00ff00, 0xff0000, abs(difference) / HUMID_MAX_DIFFERENCE
+        );
+    }
+}
+
+/**
  * @brief Perform double vibration
  */
 void Gyrocube::vibrate()
@@ -349,23 +410,32 @@ void Gyrocube::vibrate()
  */
 void Gyrocube::notify()
 {
+    // Parse current settings
     uint8_t mode = settings[current_side].target;
+    uint32_t color;
+    sscanf(settings[current_side].color, "#%6x", &color);
 
-    // TODO: make it better according to configuration
     if (mode == 0) {
         vibrate();
     }
     else if (mode == 1) {
-        for (float i = 0; i <= 1; i += 0.1) {
-            leds->interpolate(0x000000, 0xff0000, i);
-            sleep_ms(50);
-        }
+        appear(color);
     }
     else {
-        for (float i = 0; i <= 1; i += 0.1) {
-            leds->interpolate(0x000000, 0xff0000, i);
-            sleep_ms(50);
-        }
+        appear(color);
         vibrate();
     }
+}
+
+/**
+ * @brief Perform appearing effect of the color
+ * @param color Target color
+ */
+void Gyrocube::appear(uint32_t color)
+{
+    for (float i = 0; i <= 1; i += 0.1) {
+        leds->interpolate(0x000000, color, i);
+        sleep_ms(50);
+    }
+    leds->fill(0, 0, 0);
 }

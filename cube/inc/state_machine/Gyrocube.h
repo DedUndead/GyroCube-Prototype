@@ -10,6 +10,12 @@
 #define COLOR_CODE_BUFFER_SIZE 8
 #define VIBRATION_DURATION     250
 
+#define CONNECTION_COLOR       0x0000ff
+#define I2C_ERROR_COLOR        0xff0000
+
+#define TEMP_MAX_DIFFERENCE    10
+#define HUMID_MAX_DIFFERENCE   10
+
 class Gyrocube;
 
 typedef void (Gyrocube::*state_ptr)(const Event &);
@@ -46,8 +52,11 @@ private:
     void state_notification(const Event& e);
 
     void clear();
+    void display_temperature();
+    void display_humidity();
     void notify();
     void vibrate();
+    void appear(uint32_t color);
     void set_state(uint8_t state_index);
 
     int timer;                       // Timer for filtering tick events
