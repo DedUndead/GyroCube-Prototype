@@ -24,7 +24,7 @@ typedef struct side_settings {
  */
 class Gyrocube {
 public:
-    Gyrocube(Hih6020* sensor_, NeoPixel* leds_);
+    Gyrocube(Hih6020* sensor_, NeoPixel* leds_, uint8_t side, bool standalone = false);
     void handle_state(const Event& e);
     void update_settings(uint8_t side, side_settings new_setting);
 private:

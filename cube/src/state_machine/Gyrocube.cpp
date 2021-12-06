@@ -4,7 +4,15 @@
 #include "actuator/NeoPixel.h"
 #include "state_machine/Gyrocube.h"
 
-Gyrocube::Gyrocube(Hih6020* sensor_, NeoPixel* leds_) :
+/**
+ * @brief Construct a new Gyrocube:: Gyrocube object
+ * @param sensor_    Pointer to humid/temp sensor interface
+ * @param leds_      Pointer to leds actuator
+ * @param side       Current cube's side
+ * @param standalone State machine's mode.
+ * Standalone mode allows user to use the cube seperately from zigbee topology
+ */
+Gyrocube::Gyrocube(Hih6020* sensor_, NeoPixel* leds_, uint8_t side, bool standalone) :
     update_required(false), timer(0), sensor(sensor_), leds(leds_),
     functional_states { 
         &Gyrocube::state_idle,    &Gyrocube::state_lamp,
@@ -12,8 +20,6 @@ Gyrocube::Gyrocube(Hih6020* sensor_, NeoPixel* leds_) :
         &Gyrocube::state_weather, &Gyrocube::state_notification
     }
 {
-    set_state(&Gyrocube::startup);
-
     // TODO: Replace initial settings with file saved settings
     // Move to function
     for (uint8_t i = 0; i < N_SIDES; i++) {
@@ -21,8 +27,11 @@ Gyrocube::Gyrocube(Hih6020* sensor_, NeoPixel* leds_) :
         strcpy(settings[i].color, "#ff0000");
         settings[i].target = 25;
     }
-
-    current_side = 0;
+    
+    // Set initial state according to state machine's mode
+    current_side = side;
+    if (!standalone) set_state(&Gyrocube::startup);
+    else             set_state(settings[current_side].function);
 }
 
 /**
@@ -116,11 +125,15 @@ void Gyrocube::state_idle(const Event& e)
 {
     switch (e.type) {
         case Event::eEnter:
+            clear();
+
             break;
         case Event::eTick:
             if (function_changed) {
                 set_state(settings[current_side].function);
             }
+
+            break;
         case Event::eReconnect:
             set_state(&Gyrocube::startup);
 
@@ -139,6 +152,7 @@ void Gyrocube::state_lamp(const Event& e)
 {
     switch (e.type) {
         case Event::eEnter:
+            clear();
             leds->fill(settings[current_side].color);
 
             break;
@@ -176,13 +190,15 @@ void Gyrocube::state_temp(const Event& e)
 {
     switch (e.type) {
         case Event::eEnter:
+            clear();
+            
             break;
         case Event::eTick:
             if (function_changed) {
                 set_state(settings[current_side].function);
             }
 
-            // Display temperature gradient
+            break;
         case Event::eReconnect:
             set_state(&Gyrocube::startup);
 
@@ -205,13 +221,15 @@ void Gyrocube::state_humid(const Event& e)
 {
     switch (e.type) {
         case Event::eEnter:
+            clear();
+
             break;
         case Event::eTick:
             if (function_changed) {
                 set_state(settings[current_side].function);
             }
 
-            // Display humidity gradient
+            break;
         case Event::eReconnect:
             set_state(&Gyrocube::startup);
 
@@ -234,7 +252,7 @@ void Gyrocube::state_weather(const Event& e)
 {
     switch (e.type) {
         case Event::eEnter:
-            leds->fill("#ffff00");
+            clear();
 
             break;
         case Event::eTick:
@@ -269,6 +287,8 @@ void Gyrocube::state_notification(const Event& e)
 {
     switch (e.type) {
         case Event::eEnter:
+            clear();
+
             break;
         case Event::eTick:
             if (function_changed) {
@@ -297,5 +317,6 @@ void Gyrocube::state_notification(const Event& e)
  */
 void Gyrocube::clear()
 {
-    leds->fill("#000000");
+    update_required = false;
+    function_changed = false;
 }
