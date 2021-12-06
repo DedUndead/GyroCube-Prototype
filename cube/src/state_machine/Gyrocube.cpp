@@ -1,6 +1,8 @@
 #include <string.h>
+#include <stdio.h>
 #include "state_machine/Event.h"
 #include "sensor/Hih6020.h"
+#include "actuator/VibrationMotor.h"
 #include "actuator/NeoPixel.h"
 #include "state_machine/Gyrocube.h"
 
@@ -12,11 +14,18 @@
  * @param standalone State machine's mode.
  * Standalone mode allows user to use the cube seperately from zigbee topology
  */
-Gyrocube::Gyrocube(Hih6020* sensor_, NeoPixel* leds_, uint8_t side, bool standalone) :
+Gyrocube::Gyrocube(
+    Hih6020* sensor_, 
+    NeoPixel* leds_,
+    VibrationMotor* motor_, 
+    uint8_t side, 
+    bool standalone
+) :
     update_required(false),
     timer(0),
     sensor(sensor_),
     leds(leds_),
+    motor(motor_),
     functional_states { 
         &Gyrocube::state_idle,    &Gyrocube::state_lamp,
         &Gyrocube::state_temp,    &Gyrocube::state_humid,
@@ -298,7 +307,7 @@ void Gyrocube::state_notification(const Event& e)
                 set_state(settings[current_side].function);
             }
         case Event::eNotify:
-            // Notify based on settings
+            notify();
 
             break;
         case Event::eReconnect:
@@ -322,4 +331,41 @@ void Gyrocube::clear()
 {
     update_required = false;
     function_changed = false;
+}
+
+/**
+ * @brief Perform double vibration
+ */
+void Gyrocube::vibrate()
+{
+    motor->vibrate(VIBRATION_DURATION);
+    sleep_ms(100);
+    motor->vibrate(VIBRATION_DURATION);
+}
+
+/**
+ * @brief Make a notification display
+ * based on selected settings
+ */
+void Gyrocube::notify()
+{
+    uint8_t mode = settings[current_side].target;
+
+    // TODO: make it better according to configuration
+    if (mode == 0) {
+        vibrate();
+    }
+    else if (mode == 1) {
+        for (float i = 0; i <= 1; i += 0.1) {
+            leds->interpolate(0x000000, 0xff0000, i);
+            sleep_ms(50);
+        }
+    }
+    else {
+        for (float i = 0; i <= 1; i += 0.1) {
+            leds->interpolate(0x000000, 0xff0000, i);
+            sleep_ms(50);
+        }
+        vibrate();
+    }
 }

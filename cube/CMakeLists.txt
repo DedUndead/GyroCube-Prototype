@@ -25,6 +25,7 @@ target_sources(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/src/main.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/interface/i2c.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/sensor/Hih6020.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/sensor/Accelerometer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/actuator/NeoPixel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/actuator/VibrationMotor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/inc/state_machine/Event.h

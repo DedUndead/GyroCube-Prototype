@@ -8,6 +8,7 @@
 
 #define N_SIDES                6
 #define COLOR_CODE_BUFFER_SIZE 8
+#define VIBRATION_DURATION     250
 
 class Gyrocube;
 
@@ -24,7 +25,13 @@ typedef struct side_settings {
  */
 class Gyrocube {
 public:
-    Gyrocube(Hih6020* sensor_, NeoPixel* leds_, uint8_t side, bool standalone = false);
+    Gyrocube(
+        Hih6020* sensor_,
+        NeoPixel* leds_,
+        VibrationMotor* motor_,
+        uint8_t side,
+        bool standalone = false
+    );
     void handle_state(const Event& e);
     void update_settings(uint8_t side, side_settings new_setting);
 private:
@@ -39,6 +46,8 @@ private:
     void state_notification(const Event& e);
 
     void clear();
+    void notify();
+    void vibrate();
     void set_state(uint8_t state_index);
 
     int timer;                       // Timer for filtering tick events
@@ -49,6 +58,7 @@ private:
 
     Hih6020* sensor;
     NeoPixel* leds;
+    VibrationMotor* motor;
 
     // State pointer array to quickly call needed state based on side's setting
     void (Gyrocube::*functional_states[N_SIDES])(const Event&);
