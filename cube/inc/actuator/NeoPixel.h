@@ -10,7 +10,7 @@
 class NeoPixel {
 public:
     NeoPixel(PIO pio_hw_, uint8_t pin_, uint8_t length_);
-    void fill(char* color_code);
+    void fill(uint32_t color_code);
     void fill(uint8_t red, uint8_t green, uint8_t blue);
     void interpolate(uint32_t color1, uint32_t color2, float fraction);
 private:

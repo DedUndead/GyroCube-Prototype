@@ -26,17 +26,15 @@ NeoPixel::NeoPixel(PIO pio_hw_, uint8_t pin_, uint8_t length_) :
 
 /* @brief Sets the color of the leds
  * Do nothing if format is incorrect
- * @param color_code Color code in html format
+ * @param color_code Color code in hex format
  */
-void NeoPixel::fill(char* color_code)
+void NeoPixel::fill(uint32_t color_code)
 {
-    unsigned int red;
-    unsigned int green;
-    unsigned int blue;
+    uint8_t red = (color_code & 0xff0000) >> 16;
+    uint8_t green = (color_code & 0x00ff00) >> 8;
+    uint8_t blue = (color_code & 0x0000ff);
 
-    if (sscanf(color_code, "#%2x%2x%2x", &red, &green, &blue)) {
-        NeoPixel::fill(red, green, blue);
-    }
+    NeoPixel::fill(red, green, blue);
 }
 
 /* @brief Sets the color of the leds

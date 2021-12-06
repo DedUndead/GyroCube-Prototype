@@ -37,7 +37,7 @@ Gyrocube::Gyrocube(
     // Move to function
     for (uint8_t i = 0; i < N_SIDES; i++) {
         settings[i].function = i;
-        strcpy(settings[i].color, "#ff0000");
+        settings[i].color = 0xff0000;
         settings[i].target = 25;
     }
     
@@ -412,17 +412,15 @@ void Gyrocube::notify()
 {
     // Parse current settings
     uint8_t mode = settings[current_side].target;
-    uint32_t color;
-    sscanf(settings[current_side].color, "#%6x", &color);
 
     if (mode == 0) {
         vibrate();
     }
     else if (mode == 1) {
-        appear(color);
+        appear(settings[current_side].color);
     }
     else {
-        appear(color);
+        appear(settings[current_side].color);
         vibrate();
     }
 }
@@ -437,5 +435,5 @@ void Gyrocube::appear(uint32_t color)
         leds->interpolate(0x000000, color, i);
         sleep_ms(50);
     }
-    leds->fill(0, 0, 0);
+    leds->fill(0x000000);
 }
