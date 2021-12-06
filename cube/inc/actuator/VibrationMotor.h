@@ -6,19 +6,14 @@
 
 /**
  * @brief Vibration motor interface
- * Provides simple functions to issue pwm pulses to the motor
+ * Provides simple functions to issue pulses to the motor
  */
 class VibrationMotor {
 public:
-    VibrationMotor(uint8_t pin);
-    void vibrate(int duration, uint8_t vibration_intensity);
+    VibrationMotor(uint8_t pin_);
+    void vibrate(int duration);
 private:
-    static void irq_pwm_handler();
-
-    static uint slice_idx;
-    static int counter;
-    static uint8_t intensity;
-    pwm_config config;
+    uint8_t pin;
 };
 
 

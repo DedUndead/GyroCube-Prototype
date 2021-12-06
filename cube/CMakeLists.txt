@@ -26,6 +26,7 @@ target_sources(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/src/interface/i2c.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/sensor/Hih6020.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/actuator/NeoPixel.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/actuator/VibrationMotor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/inc/state_machine/Event.h
     ${CMAKE_CURRENT_LIST_DIR}/src/state_machine/Gyrocube.cpp
 )
@@ -43,6 +44,7 @@ target_link_libraries(${PROJECT_NAME}
     hardware_i2c
     hardware_pio
     hardware_adc
+    hardware_gpio
 )
 
 # Additionally generate python and hex pioasm outputs for inclusion in the RP2040 datasheet

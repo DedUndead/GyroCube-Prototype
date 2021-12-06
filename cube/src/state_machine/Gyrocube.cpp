@@ -13,7 +13,10 @@
  * Standalone mode allows user to use the cube seperately from zigbee topology
  */
 Gyrocube::Gyrocube(Hih6020* sensor_, NeoPixel* leds_, uint8_t side, bool standalone) :
-    update_required(false), timer(0), sensor(sensor_), leds(leds_),
+    update_required(false),
+    timer(0),
+    sensor(sensor_),
+    leds(leds_),
     functional_states { 
         &Gyrocube::state_idle,    &Gyrocube::state_lamp,
         &Gyrocube::state_temp,    &Gyrocube::state_humid,
