@@ -81,7 +81,7 @@ int main() {
         accelerometer.read(acc_buffer);
         printf("X: %d\nY: %d\nZ: %d\n\n", acc_buffer.x, acc_buffer.y, acc_buffer.z);
 
-        sleep_ms(3000);
+        sleep_ms(50);
     }
 #endif
 }

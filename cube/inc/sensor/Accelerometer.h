@@ -8,6 +8,7 @@
 #define DEF_ADDRESS      0x1E
 #define CTRL_REG1        0x2A
 #define OUT_X_MSB        0x01
+#define SCALE_FACTOR     (float)0.244
 
 #define XYZ_BUFFER       3
 #define XYZ_BUFFER_FULL  6

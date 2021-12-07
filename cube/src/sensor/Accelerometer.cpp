@@ -6,7 +6,7 @@ Accelerometer::Accelerometer(I2C* i2c_, uint8_t address_) :
     fast_mode(false),
     address(address_),
     i2c(i2c_) 
-{ /* ... */ }
+{ /* Empty constructor budy */ }
 
 /**
  * @brief Read sensor data
@@ -21,20 +21,20 @@ int Accelerometer::read(acc_measurements& buffer)
     
     // Save data to buffer
     if (fast_mode) {
-        printf("Raw reading: %d %d %d", buffer_short[0], buffer_short[1], buffer_short[2]);
-        buffer.x = static_cast<int8_t>(buffer_short[0]);
-        buffer.y = static_cast<int8_t>(buffer_short[1]);
-        buffer.z = static_cast<int8_t>(buffer_short[2]);
+        printf("Raw reading: %d %d %d\n", buffer_short[0], buffer_short[1], buffer_short[2]);
+        buffer.x = static_cast<int16_t>(buffer_short[0] << 6) * SCALE_FACTOR;
+        buffer.y = static_cast<int16_t>(buffer_short[1] << 6) * SCALE_FACTOR;
+        buffer.z = static_cast<int16_t>(buffer_short[2] << 6) * SCALE_FACTOR;
     }
     else {
         uint16_t x_raw = (buffer_full[0] << 6) | (buffer_full[1] >> 2);
-        buffer.x = static_cast<int16_t>(x_raw);
+        buffer.x = static_cast<int16_t>(x_raw) * SCALE_FACTOR;
 
         uint16_t y_raw = (buffer_full[2] << 6) | (buffer_full[3] >> 2);
-        buffer.y = static_cast<int16_t>(y_raw);
+        buffer.y = static_cast<int16_t>(y_raw) * SCALE_FACTOR;
 
         uint16_t z_raw = (buffer_full[4] << 6) | (buffer_full[5] >> 2);
-        buffer.z = static_cast<int16_t>(z_raw);
+        buffer.z = static_cast<int16_t>(z_raw) * SCALE_FACTOR;
 
         printf("Raw reading: %d %d %d\n", x_raw, y_raw, z_raw);
     }
@@ -44,16 +44,15 @@ int Accelerometer::read(acc_measurements& buffer)
 
 /**
  * @brief Enable accelerometer in fast mode
- * Reading will be decreased to 8 bits
+ * Reading will be decreased to 8 bits, therefore resolution decreases
  * @return 0 on success, error status on error
  */
 int Accelerometer::enable_in_fast_mode()
-{
-    // Disable accelerometer to change configuration
+{   
     disable();
-    
+
     // Write new configuration
-    uint8_t config = 0b00001011;
+    uint8_t config = 0b00001111;
     if (i2c->write(address, CTRL_REG1, &config, 1) == PICO_ERROR_GENERIC) {
         return ACC_ERROR_STATUS;
     }
@@ -70,7 +69,9 @@ int Accelerometer::enable_in_fast_mode()
  */
 int Accelerometer::enable()
 {
-    uint8_t config = 0b00001001;
+    disable();
+
+    uint8_t config = 0b00001101;
     if (i2c->write(address, CTRL_REG1, &config, 1) == PICO_ERROR_GENERIC) {
         return ACC_ERROR_STATUS;
     }
