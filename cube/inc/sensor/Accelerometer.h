@@ -7,6 +7,13 @@
 
 #define DEF_ADDRESS      0x1E
 #define CTRL_REG1        0x2A
+#define CTRL_REG4        0x2D
+#define CTRL_REG5        0x2E
+#define PL_STATUS        0x10
+#define PL_CFG           0x11
+#define PL_COUNT         0x12
+#define PL_BF_ZCOMP      0x13
+#define PL_THS_REG       0x14
 #define OUT_X_MSB        0x01
 #define SCALE_FACTOR     (float)0.244
 
@@ -31,6 +38,8 @@ public:
     int enable_in_fast_mode();
     int enable();
     int disable();
+    int enable_orientation_interrupt();
+    int get_orientation();
 private:
     int fetch_data();
 
