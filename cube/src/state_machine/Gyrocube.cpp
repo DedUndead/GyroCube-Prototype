@@ -400,8 +400,6 @@ void Gyrocube::display_humidity()
 void Gyrocube::vibrate()
 {
     motor->vibrate(VIBRATION_DURATION);
-    sleep_ms(100);
-    motor->vibrate(VIBRATION_DURATION);
 }
 
 /**
@@ -433,7 +431,7 @@ void Gyrocube::appear(uint32_t color)
 {
     for (float i = 0; i <= 1; i += 0.1) {
         leds->interpolate(0x000000, color, i);
-        sleep_ms(50);
+        sleep_ms(30);
     }
     leds->fill(0x000000);
 }

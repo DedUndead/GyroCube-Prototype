@@ -17,16 +17,31 @@
 #define NEOPIXEL_PIN     2
 #define MOTOR_PIN        3
 #define NEOPIXEL_LEN     30
-#define ACC_IRQ_PIN      16
+#define TICK_LENGTH      500
+#define SAMPLING_RATE    5
 
-static volatile bool cube_flipped(false);
+static volatile bool tick(false);
+static volatile bool sample_side(false);
+static volatile uint8_t tick_counter(0);
 
 /* Function definitions */
 
 /* Interrupt handlers */
-void gpio_irq_handler(uint gpio, uint32_t events)
-{
-    cube_flipped = true;
+bool irq_timer(repeating_timer *rt)
+{   
+    // Set state machine tick flag ready
+    tick = true;
+
+    // Set sample acceleration flad ready
+    if (tick_counter < SAMPLING_RATE) {
+        tick_counter++;
+    }
+    else {
+        sample_side = true;
+        tick_counter = 0;
+    }
+
+    return true;
 }
 
 int main() {
@@ -39,31 +54,30 @@ int main() {
     NeoPixel leds(pio0, NEOPIXEL_PIN, NEOPIXEL_LEN);
     VibrationMotor motor(MOTOR_PIN);
 
-    /* Enable pin interrupts for accelerometer */
-    gpio_set_irq_enabled_with_callback(
-        ACC_IRQ_PIN,
-        GPIO_IRQ_EDGE_RISE,
-        true,
-        gpio_irq_handler
-    );
+    sleep_ms(100); // Current settling time
 
-    sleep_ms(5000); // Debugging purpose !
-
-    /* Configure accelerometer */
-    if (accelerometer.enable_orientation_interrupt() != 0) {
-        printf("Error on orientation configuration.\n");
-    }
-    if (accelerometer.enable_in_fast_mode() != 0) {
-        printf("Error on accelerometer enabling.\n");
-    }
+    /* Enable accelerometer */
+    acc_measurements acceleration;
+    accelerometer.enable_in_fast_mode();
 
     /* Initialize cube's state machine */
     Gyrocube gyrocube(&hih6020, &leds, &motor, 0, true);
 
+    /* Set up timer interrupts */
+    repeating_timer timer;
+    add_repeating_timer_ms(TICK_LENGTH, irq_timer, NULL, &timer);
+
     while (true) {
-        if (cube_flipped) {
-            int orientation = accelerometer.get_orientation();
-            printf("New orientation value is %d\n", orientation);
+        if (sample_side) {
+            sample_side = false;
+            accelerometer.read(acceleration);
+            printf("X:%d\n Y:%d\n Z:%d\n\n");
+            //analyze_measurement();
+        }
+
+        if (tick) {
+            tick = false;
+            gyrocube.handle_state(Event::eTick);
         }
     }
 

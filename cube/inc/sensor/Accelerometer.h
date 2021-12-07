@@ -38,8 +38,6 @@ public:
     int enable_in_fast_mode();
     int enable();
     int disable();
-    int enable_orientation_interrupt();
-    int get_orientation();
 private:
     int fetch_data();
 

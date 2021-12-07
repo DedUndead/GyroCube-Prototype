@@ -46,7 +46,6 @@ target_link_libraries(${PROJECT_NAME}
     hardware_pio
     hardware_adc
     hardware_gpio
-    hardware_irq
 )
 
 # Additionally generate python and hex pioasm outputs for inclusion in the RP2040 datasheet
