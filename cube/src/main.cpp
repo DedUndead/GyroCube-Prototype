@@ -74,7 +74,7 @@ int main() {
     sleep_ms(3000);
 
     printf("Enabling accelerometer.\n");
-    accelerometer.enable();
+    accelerometer.enable_in_fast_mode();
 
     while (true) {
         // Read into acc buffer
