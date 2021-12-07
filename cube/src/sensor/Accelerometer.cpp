@@ -119,31 +119,10 @@ int Accelerometer::enable_orientation_interrupt()
     } 
     sleep_ms(5);
 
-    // Configure z-tilt angle compensation register
-    config = 0;
-    if (i2c->write(address, PL_BF_ZCOMP, &config, 1) == PICO_ERROR_GENERIC) {
-        return ACC_ERROR_STATUS;
-    }
-    sleep_ms(5);
-
-    // Configure trip angle and thresholds
-    config = 0b01001010;
-    if (i2c->write(address, PL_THS_REG, &config, 1) == PICO_ERROR_GENERIC) {
-        return ACC_ERROR_STATUS;
-    }
-    sleep_ms(5);
-
     // Enable orientation interrupt
     // By default, interrupt is routed to pin INT2
     config = 0b00010000;
     if (i2c->write(address, CTRL_REG4, &config, 1) == PICO_ERROR_GENERIC) {
-        return ACC_ERROR_STATUS;
-    }
-    sleep_ms(5);
-
-    // Set debounce register
-    config = 0b00000101;
-    if (i2c->write(address, PL_COUNT, &config, 1) == PICO_ERROR_GENERIC) {
         return ACC_ERROR_STATUS;
     }
     sleep_ms(5);
