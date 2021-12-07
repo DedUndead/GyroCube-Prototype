@@ -26,7 +26,7 @@ typedef struct acc_measurements {
 class Accelerometer {
 public:
     Accelerometer(I2C* i2c_, uint8_t address_ = DEF_ADDRESS);
-    int configure_fast_mode();
+    int enable();
     int read(acc_measurements& buffer);
 private:
     int fetch_data();

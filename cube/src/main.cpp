@@ -73,13 +73,13 @@ int main() {
 
     sleep_ms(3000);
 
-    printf("Configuring accelerometer into fast mode.\n");
-    accelerometer.configure_fast_mode();
+    printf("Enabling accelerometer.\n");
+    accelerometer.enable();
 
     while (true) {
         // Read into acc buffer
         accelerometer.read(acc_buffer);
-        printf("X: %d\nY: %d:\nZ: %d\n\n", acc_buffer.x, acc_buffer.y, acc_buffer.z);
+        printf("X: %d\nY: %d\nZ: %d\n\n", acc_buffer.x, acc_buffer.y, acc_buffer.z);
 
         sleep_ms(3000);
     }

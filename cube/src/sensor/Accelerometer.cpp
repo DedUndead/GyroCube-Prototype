@@ -9,10 +9,10 @@ Accelerometer::Accelerometer(I2C* i2c_, uint8_t address_) :
 { /* ... */ }
 
 /**
- * @brief Configurate accelerometer to operate in fast mode
+ * @brief Enable accelerometer to operate
  * @return 0 on success, error status on error
  */
-int Accelerometer::configure_fast_mode()
+int Accelerometer::enable()
 {
     // Set control register to read values in Xmsb, Ymsb, Zmsb order
     uint8_t config = 0b00001101;
@@ -20,8 +20,6 @@ int Accelerometer::configure_fast_mode()
         return ACC_ERROR_STATUS;
     }
     
-    fast_mode = true;
-
     return 0;
 }
 
@@ -48,10 +46,12 @@ int Accelerometer::read(acc_measurements& buffer)
         buffer.x = static_cast<int>(x_raw);
 
         uint16_t y_raw = (buffer_short[2] << 6) | (buffer_short[3] >> 2);
-        buffer.x = static_cast<int>(y_raw);
+        buffer.y = static_cast<int>(y_raw);
 
         uint16_t z_raw = (buffer_short[4] << 6) | (buffer_short[5] >> 2);
-        buffer.x = static_cast<int>(z_raw);
+        buffer.z = static_cast<int>(z_raw);
+
+        printf("Raw reading: %d %d %d\n", x_raw, y_raw, z_raw);
     }
 
     return 0;
