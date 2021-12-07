@@ -8,7 +8,7 @@
 #define STATUS_BITS       0xC0
 #define MASK_STATUS       0x3F
 #define DATA_LENGTH_BYTES 4
-#define ERROR_STATUS      0x65
+#define HIH_ERROR_STATUS  0x65
 #define SCALING_FACTOR    (0x4000 - 2)
 #define HUMIDITY_MAX      100
 #define TEMPERATURE_MAX   125

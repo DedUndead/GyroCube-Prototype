@@ -4,6 +4,7 @@
 #include "hardware/pio.h"
 #include "hardware/gpio.h"
 #include "sensor/Hih6020.h"
+#include "sensor/Accelerometer.h"
 #include "actuator/NeoPixel.h"
 #include "actuator/VibrationMotor.h"
 
@@ -13,7 +14,7 @@
 
 int main() {
     stdio_init_all();
-    
+
 #if 0 // NeoPixel interface example
     NeoPixel leds(pio0, 0, 30);
     
@@ -57,7 +58,7 @@ int main() {
     }   
 #endif
 
-#if 1 // Vibration motor interface usage example
+#if 0 // Vibration motor interface usage example
     VibrationMotor motor(0);
     while (true) {
         motor.vibrate(500);
@@ -67,5 +68,20 @@ int main() {
 
 #if 1 // Accelerometer interface usage example
     I2C i2c(i2c0, BAUDRATE, SDA_PIN, SCL_PIN);
+    Accelerometer accelerometer(&i2c);
+    acc_measurements acc_buffer;
+
+    sleep_ms(3000);
+
+    printf("Configuring accelerometer into fast mode.\n");
+    accelerometer.configure_fast_mode();
+
+    while (true) {
+        // Read into acc buffer
+        accelerometer.read(acc_buffer);
+        printf("X: %d\nY: %d:\nZ: %d\n\n", acc_buffer.x, acc_buffer.y, acc_buffer.z);
+
+        sleep_ms(3000);
+    }
 #endif
 }

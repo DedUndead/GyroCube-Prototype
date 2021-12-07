@@ -335,7 +335,7 @@ void Gyrocube::display_temperature()
 {
     int temperature = sensor->read_temperature();
     // Display error
-    if (temperature == ERROR_STATUS) {
+    if (temperature == HIH_ERROR_STATUS) {
         appear(I2C_ERROR_COLOR);
         vibrate();
         return;
@@ -372,7 +372,7 @@ void Gyrocube::display_humidity()
 {
     int humidity = sensor->read_humidity();
     // Display error
-    if (humidity == ERROR_STATUS) {
+    if (humidity == HIH_ERROR_STATUS) {
         appear(I2C_ERROR_COLOR);
         vibrate();
         return;
