@@ -10,10 +10,13 @@
  */
 class VibrationMotor {
 public:
-    VibrationMotor(uint8_t pin_);
+    VibrationMotor(uint8_t motor_pin_);
     void vibrate(int duration);
 private:
-    uint8_t pin;
+    static uint8_t motor_pin;
+
+    static repeating_timer timer;
+    static int64_t alarm_handler(alarm_id_t id, void *user_data);
 };
 
 

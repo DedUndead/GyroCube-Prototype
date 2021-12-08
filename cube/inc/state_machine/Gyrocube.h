@@ -7,7 +7,7 @@
 #include "actuator/NeoPixel.h"
 
 #define N_SIDES                6
-#define VIBRATION_DURATION     250
+#define VIBRATION_DURATION     400
 
 #define CONNECTION_COLOR       0x0000ff
 #define I2C_ERROR_COLOR        0xff0000
