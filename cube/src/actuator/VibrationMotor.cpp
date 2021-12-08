@@ -20,6 +20,7 @@ VibrationMotor::VibrationMotor(uint8_t motor_pin_)
 void VibrationMotor::vibrate(int duration)
 {
     gpio_put(motor_pin, true);
+    // Handle waiting in the background
     add_alarm_in_ms(duration, alarm_handler, NULL, false);
 }
 

@@ -22,9 +22,9 @@
 #define ACC_ERROR_STATUS 0xEFFF
 
 typedef struct acc_measurements {
-    int x;
-    int y;
-    int z;
+    int16_t x;
+    int16_t y;
+    int16_t z;
 } acc_measurements;
 
 /**

@@ -21,22 +21,14 @@ int Accelerometer::read(acc_measurements& buffer)
     
     // Save data to buffer
     if (fast_mode) {
-        printf("Raw reading: %d %d %d\n", buffer_short[0], buffer_short[1], buffer_short[2]);
-        buffer.x = static_cast<int16_t>(buffer_short[0] << 6) * SCALE_FACTOR;
-        buffer.y = static_cast<int16_t>(buffer_short[1] << 6) * SCALE_FACTOR;
-        buffer.z = static_cast<int16_t>(buffer_short[2] << 6) * SCALE_FACTOR;
+        buffer.x = ((int16_t)(buffer_short[0] << 8) >> 2) * SCALE_FACTOR;
+        buffer.y = ((int16_t)(buffer_short[1] << 8) >> 2)* SCALE_FACTOR;
+        buffer.z = ((int16_t)(buffer_short[2] << 8) >> 2) * SCALE_FACTOR;
     }
     else {
-        uint16_t x_raw = (buffer_full[0] << 6) | (buffer_full[1] >> 2);
-        buffer.x = static_cast<int16_t>(x_raw) * SCALE_FACTOR;
-
-        uint16_t y_raw = (buffer_full[2] << 6) | (buffer_full[3] >> 2);
-        buffer.y = static_cast<int16_t>(y_raw) * SCALE_FACTOR;
-
-        uint16_t z_raw = (buffer_full[4] << 6) | (buffer_full[5] >> 2);
-        buffer.z = static_cast<int16_t>(z_raw) * SCALE_FACTOR;
-
-        printf("Raw reading: %d %d %d\n", x_raw, y_raw, z_raw);
+        buffer.x = ((int16_t)((buffer_full[0] << 8) | buffer_full[1]) >> 2) * SCALE_FACTOR;
+        buffer.y = ((int16_t)((buffer_full[2] << 8) | buffer_full[3]) >> 2) * SCALE_FACTOR;
+        buffer.z = ((int16_t)((buffer_full[4] << 8) | buffer_full[5]) >> 2) * SCALE_FACTOR;
     }
 
     return 0;
