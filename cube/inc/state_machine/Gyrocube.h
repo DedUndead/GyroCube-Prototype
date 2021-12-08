@@ -8,6 +8,7 @@
 
 #define N_SIDES                6
 #define VIBRATION_DURATION     400
+#define N_WEATHER_COLORS       10
 
 #define CONNECTION_COLOR       0x0000ff
 #define I2C_ERROR_COLOR        0xff0000
@@ -39,6 +40,7 @@ public:
     );
     void handle_state(const Event& e);
     void update_settings(uint8_t side, side_settings new_setting);
+    void update_weather(uint8_t new_color_index);
 private:
     // States and state handlers
     state_ptr current_state;
@@ -74,6 +76,9 @@ private:
 
     // State pointer array to quickly call needed state based on side's setting
     void (Gyrocube::*functional_states[N_SIDES])(const Event&);
+    // Weather-color array
+    uint32_t weather_colors[N_WEATHER_COLORS];
+    uint8_t weather_color_index;
 };
 
 

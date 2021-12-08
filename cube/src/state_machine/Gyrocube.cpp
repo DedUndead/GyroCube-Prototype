@@ -31,7 +31,12 @@ Gyrocube::Gyrocube(
         &Gyrocube::state_idle,    &Gyrocube::state_lamp,
         &Gyrocube::state_temp,    &Gyrocube::state_humid,
         &Gyrocube::state_weather, &Gyrocube::state_notification
-    }
+    },
+    weather_colors {
+        0xc0f6fb, 0xdddfdf, 0xdddfdf, 0xc2c2c2, 0xc2c2c2,
+        0xdddfdf, 0xc0f6fb, 0xdddfdf, 0xf2f27a, 0xf0a144,
+    },
+    weather_color_index(0)
 {
     // TODO: Replace initial settings with file saved settings
     // Move to function
@@ -43,18 +48,25 @@ Gyrocube::Gyrocube(
     
     // Set initial state according to state machine's mode
     current_side = side;
-    if (!standalone) set_state(&Gyrocube::startup);
-    else             set_state(settings[current_side].function);
+    if (!standalone) current_state = &Gyrocube::startup;
+    else             current_state = functional_states[settings[current_side].function];
 }
 
 /**
  * @brief Change current state machine state
  * Call enter event after change
+ * Delay for state transition is required to assure that
+ * neopixel clock is syncronized
  * @param new_state Pointer to state
  */
 void Gyrocube::set_state(state_ptr new_state)
 {
+    sleep_ms(10); // Delay for state transition
+    (this->*current_state)(Event(Event::eExit));
+
     current_state = new_state;
+
+    sleep_ms(10); // Delay for state transition
     (this->*current_state)(Event(Event::eEnter));
 }
 
@@ -70,10 +82,13 @@ void Gyrocube::set_state(uint8_t state_index)
 
 /**
  * @brief Send event to current state
+ * Delay for event transition is required to assure that
+ * neopixel clock is syncronized
  * @param e Event object
  */
 void Gyrocube::handle_state(const Event& e)
 {
+    sleep_ms(10); // Delay for event transition
     (this->*current_state)(e);
 }
 
@@ -97,6 +112,16 @@ void Gyrocube::update_settings(uint8_t side, side_settings new_setting)
 }
 
 /**
+ * @brief Update weather
+ * @param new_color_index New color index 
+ */
+void Gyrocube::update_weather(uint8_t new_color_index)
+{
+    weather_color_index = new_color_index;
+    update_required = true;
+}
+
+/**
  * @brief Startup event
  * Waits for the hub's ACK
  */
@@ -112,6 +137,10 @@ void Gyrocube::startup(const Event& e)
         case Event::eNotify:
             current_side = e.value;
             set_state(settings[current_side].function);
+
+            break;
+        case Event::eExit:
+            leds->fill(0x000000);
 
             break;
         default:
@@ -132,6 +161,7 @@ void Gyrocube::state_idle(const Event& e)
             break;
         case Event::eTick:
             if (function_changed) {
+                function_changed = false;
                 set_state(settings[current_side].function);
             }
 
@@ -145,11 +175,19 @@ void Gyrocube::state_idle(const Event& e)
             set_state(settings[current_side].function);
 
             break;
+        case Event::eExit:
+            leds->fill(0x000000);
+
+            break;
         default:
             break;
     }
 }
 
+/**
+ * @brief Lamp state
+ * Display a certain color, user can configure
+ */
 void Gyrocube::state_lamp(const Event& e)
 {
     switch (e.type) {
@@ -160,6 +198,7 @@ void Gyrocube::state_lamp(const Event& e)
             break;
         case Event::eTick:
             if (function_changed) {
+                function_changed = false;
                 set_state(settings[current_side].function);
             }
 
@@ -177,6 +216,10 @@ void Gyrocube::state_lamp(const Event& e)
         case Event::eChange:
             current_side = e.value;
             set_state(settings[current_side].function);
+
+            break;
+        case Event::eExit:
+            leds->fill(0x000000);
 
             break;
         default:
@@ -197,6 +240,7 @@ void Gyrocube::state_temp(const Event& e)
             break;
         case Event::eTick:
             if (function_changed) {
+                function_changed = false;
                 set_state(settings[current_side].function);
             }
 
@@ -211,6 +255,10 @@ void Gyrocube::state_temp(const Event& e)
             current_side = e.value;
             set_state(settings[current_side].function);
             
+            break;
+        case Event::eExit:
+            leds->fill(0x000000);
+
             break;
         default:
             break;
@@ -230,10 +278,11 @@ void Gyrocube::state_humid(const Event& e)
             break;
         case Event::eTick:
             if (function_changed) {
+                function_changed = false;
                 set_state(settings[current_side].function);
             }
 
-            display_temperature();
+            display_humidity();
 
             break;
         case Event::eReconnect:
@@ -244,6 +293,10 @@ void Gyrocube::state_humid(const Event& e)
             current_side = e.value;
             set_state(settings[current_side].function);
             
+            break;
+        case Event::eExit:
+            leds->fill(0x000000);
+
             break;
         default:
             break;
@@ -259,6 +312,7 @@ void Gyrocube::state_weather(const Event& e)
     switch (e.type) {
         case Event::eEnter:
             clear();
+            leds->fill(weather_colors[weather_color_index]);
 
             break;
         case Event::eTick:
@@ -267,8 +321,14 @@ void Gyrocube::state_weather(const Event& e)
             }
 
             if (update_required) {
-                
+                leds->fill(weather_colors[weather_color_index]);
+                update_required = false;
             }
+
+            // DEBUGGING
+            if (weather_color_index < N_WEATHER_COLORS) weather_color_index++;
+            else weather_color_index = 0;
+            update_weather(weather_color_index);
 
             break;
         case Event::eReconnect:
@@ -279,6 +339,10 @@ void Gyrocube::state_weather(const Event& e)
             current_side = e.value;
             set_state(settings[current_side].function);
             
+            break;
+        case Event::eExit:
+            leds->fill(0x000000);
+
             break;
         default:
             break;
@@ -312,6 +376,10 @@ void Gyrocube::state_notification(const Event& e)
             current_side = e.value;
             set_state(settings[current_side].function);
             
+            break;
+        case Event::eExit:
+            leds->fill(0x000000);
+
             break;
         default:
             break; 
