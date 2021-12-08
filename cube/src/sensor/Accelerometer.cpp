@@ -98,11 +98,29 @@ int Accelerometer::disable()
 int Accelerometer::fetch_data()
 {
     if (fast_mode) {
-        printf("Fast mode reading.\n");
         return i2c->read(address, OUT_X_MSB, buffer_short, XYZ_BUFFER);
     }
     else {
-        printf("Slow mode reading.\n");
         return i2c->read(address, OUT_X_MSB, buffer_full, XYZ_BUFFER_FULL);
     }
+}
+
+/**
+ * @brief Returns current orientation of the cube
+ * @return Side index of the cube
+ * On error, return ORIENT_UNKNOWN
+ */
+uint8_t Accelerometer::get_side()
+{
+    if (Accelerometer::read(internal_measurements) == ACC_ERROR_STATUS) {
+        return ORIENT_UNKNOWN;
+    };
+
+    if      (internal_measurements.z > THRESHOLD)      return 0;
+    else if (internal_measurements.y < -1 * THRESHOLD) return 1;
+    else if (internal_measurements.x < -1 * THRESHOLD) return 2;
+    else if (internal_measurements.x > THRESHOLD)      return 3;
+    else if (internal_measurements.y > THRESHOLD)      return 4;
+    else if (internal_measurements.z < -1 * THRESHOLD) return 5;
+    else                                               return ORIENT_UNKNOWN;
 }
