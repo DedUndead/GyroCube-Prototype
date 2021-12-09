@@ -54,147 +54,162 @@
     </header>
 
     <!--Main-->
-    <main
-        class="w-full px-3 py-5 relative flex flex-col border-b-2 border-r-2 border-l-2 border-indigo-300 rounded-b-2xl"
-        id="main_content">
-        <img class="object-contain" src="/images/cube_icon.jpg">
-        <!--Functionality-->
-        <div class="flex flex-col justify-start mt-1">
-            <div class="relative flex flex-row justify-start mt-1 md:text-lg md:leading-tight">
-                <label for="functionality" class="mr-2 leading-tight text-2xl">Functionality: </label>
-                <select
-                    id="functionality"
-                    class="flex inline-flex float-right text-sm w-auto apperance-none bg-white border border-indigo-100 hover:border-indigo-200 rounded shadow focus:outline-none lg:text-md">
-                    <option>Simple color</option>
-                    <option>Temp tracker</option>
-                    <option>Humidity tracker</option>
-                    <option>Notifications</option>
-                    <option>Weather</option>
-                </select>
-            </div>
-        </div>
-        <!--Color picker-->
-        <div id="simple_color" class="flex flex-col justify-start mt-1 md:mt-2" style="display:none;">
-            <span class="text-xl font-semibold">Simple color</span>
-            <form class=" flex inline-flex mt-1">
-                <label for="color" class="mr-2 leading-tight text-lg py-2">Color:</label>
-                <input type="color" id="colorPick" value="#000ff">
-            </form>
-        </div>
+    <main>
+        <!-- Image section -->
+        <section
+            class="w-full px-3 py-5 relative flex flex-col border-r-2 border-l-2 border-indigo-300"
+            id="main_content">
+            <img class="object-contain" src="/images/cube_icon.jpg">
+        </section>
 
-        <!--Temp Tracker-->
-        <div id="temp_tracker" class="flex flex-col justify-start mt-1 md:mt-2" style="display:none;">
-            <span class="text-2xl font-semibold">Temperature Tracker</span>
-            <div class="relative flex flex-row justify-start mt-1 md:mt-2">
-                <label for="side_temp" class="mr-2 leading-tight text-lg">Side:</label>
-                <select
-                    class="flex inline-flex float-right text-sm w-auto apperance-none bg-white border border-indigo-100 hover:border-indigo-200 rounded shadow focus:outline-none lg:text-md">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                    <option>6</option>
-                </select>
-            </div>
-            <form class="relative flex inline-flex md:mt-2">
-                <label for="temp_target" class="mr-2 leading-tight text-lg">Temp target:</label>
-                <input class="w-1/12 leading-tight focus:outline-none border border-indigo-200 rounded" type="number"
-                    placeholder="25" />
-            </form>
-            <button
-                class="flex flex-start mt-1 w-1/4 md:w-1/6 md:leading-tight md:text-lg justify-center hover:bg-indigo-100 hover:bg-indigo-200 border-indigo-100 text-sm border-4 rounded"
-                type="button">
-                Submit
-            </button>
-        </div>
-
-        <!--Humidity Tracker-->
-        <div id="humidity_tracker" class="flex flex-col justify-start mt-1 md:mt-2" style="display:none;">
-            <span class="text-xl font-semibold">Humidity Tracker</span>
-            <div class="relative flex flex-row justify-start mt-1 md:mt-2">
-                <label for="side_temp" class="mr-2 leading-tight text-lg">Side:</label>
-                <select
-                    class="flex inline-flex float-right text-sm w-auto apperance-none bg-white border border-indigo-100 hover:border-indigo-200 rounded shadow focus:outline-none lg:text-md">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                    <option>6</option>
-                </select>
-            </div>
-            <form class="relative flex inline-flex md:mt-2">
-                <label for="temp_target" class="mr-2 leading-tight text-lg">Humidity target:</label>
-                <input class="w-1/12 leading-tight focus:outline-none border border-indigo-200 rounded" type="number"
-                    placeholder="25" />
-            </form>
-            <button
-                class="flex flex-start mt-1 md:justify-center w-1/4 md:w-1/6 md:leading-tight md:text-lg justify-center hover:bg-indigo-100 hover:bg-indigo-200 border-indigo-100 text-sm border-4 rounded"
-                type="button">
-                Submit
-            </button>
-        </div>
-        <!--Weather-->
-        <div id="weather" class="flex flex-col justify-start mt-1 md:mt-2" style="display:none;">
-            <span class="text-xl font-semibold">Weather Forecast</span>
-            <div class="relative flex flex-row justify-start mt-1 md:mt-2">
-                <label for="side_temp" class="mr-2 leading-tight text-lg">Side:</label>
-                <select
-                    class="flex inline-flex float-right text-sm w-auto apperance-none bg-white border border-indigo-100 hover:border-indigo-200 rounded shadow focus:outline-none lg:text-md">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                    <option>6</option>
-                </select>
-            </div>
-            <button
-                class="flex flex-start w-1/4 mt-1 md:w-1/6 md:leading-tight md:text-lg justify-center hover:bg-indigo-100 hover:bg-indigo-200 border-indigo-100 text-sm border-4 rounded"
-                type="button">
-                Submit
-            </button>
-        </div>
-
-        <!--Notification Tracker-->
-        <div id="notifications" class="flex flex-col justify-start mt-1 md:mt-2" style="display:none;">
-            <span class="text-xl font-semibold">Notification Tracker:</span>
-            <div class="relative flex flex-row justify-start mt-1 md:mt-2">
-                <label for="side_temp" class="mr-2 leading-tight text-lg">Side:</label>
-                <select
-                    class="flex inline-flex float-right text-sm w-auto apperance-none bg-white border border-indigo-100 hover:border-indigo-200 rounded shadow focus:outline-none lg:text-md">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                    <option>6</option>
-                </select>
-            </div>
-            <div class="mt-1">
-                <span class="leading-tight text-lg">Notification Tracker:</span>
-                <div class="mt-1">
-                    <label class="inline-flex items-center">
-                        <input type="radio" class="form-radio" name="notificationsType" value="vibrate">
-                        <span class="ml-2">Vibrate</span>
-                    </label>
-                    <label class="inline-flex items-center ml-6">
-                        <input type="radio" class="form-radio" name="notificationsType" value="lights">
-                        <span class="ml-2">Lights</span>
-                    </label>
-                    <label class="inline-flex items-center ml-6">
-                        <input type="radio" class="form-radio" name="notificationsType" value="both">
-                        <span class="ml-2">Both</span>
-                    </label>
+        <!-- Setting section -->
+        <!-- First the style for mobile, so vertically from top to bottom : settings, stats -->
+        <!-- Md style for stretched, horizontally from left to right settings, stats -->
+        <section class="w-full px-3 py-5 relative bg-blue-100 flex flex-col border-2 border-indigo-300 rounded-b-2xl">
+            <!--Functionality-->
+            <div class="flex flex-col justify-start mt-1">
+                <div class="relative flex flex-row justify-start mt-1 md:text-lg md:leading-tight">
+                    <label for="functionality" class="mr-2 leading-tight text-2xl">Functionality: </label>
+                    <select
+                        id="functionality"
+                        class="flex inline-flex float-right text-sm w-auto apperance-none bg-white border border-indigo-100 hover:border-indigo-200 rounded shadow focus:outline-none lg:text-md">
+                        <option>Simple color</option>
+                        <option>Temp tracker</option>
+                        <option>Humidity tracker</option>
+                        <option>Notifications</option>
+                        <option>Weather</option>
+                    </select>
                 </div>
             </div>
-            <button
-                class="flex flex-start w-1/4 mt-1 md:w-1/6 md:leading-tight md:text-lg justify-center hover:bg-indigo-100 hover:bg-indigo-200 border-indigo-100 text-sm border-4 rounded"
-                type="button">
-                Submit
-            </button>
-        </div>
+            <!--Color picker-->
+            <div id="simple_color" class="flex flex-col justify-start mt-1 md:mt-2" style="display:none;">
+                <span class="text-xl font-semibold">Simple color</span>
+                <form class=" flex inline-flex mt-1">
+                    <label for="color" class="mr-2 leading-tight text-lg py-2">Color:</label>
+                    <input type="color" id="colorPick" value="#000ff">
+                </form>
+            </div>
+
+            <!--Temp Tracker-->
+            <div id="temp_tracker" class="flex flex-col justify-start mt-1 md:mt-2" style="display:none;">
+                <span class="text-2xl font-semibold">Temperature Tracker</span>
+                <div class="relative flex flex-row justify-start mt-1 md:mt-2">
+                    <label for="side_temp" class="mr-2 leading-tight text-lg">Side:</label>
+                    <select
+                        class="flex inline-flex float-right text-sm w-auto apperance-none bg-white border border-indigo-100 hover:border-indigo-200 rounded shadow focus:outline-none lg:text-md">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+                    </select>
+                </div>
+                <form class="relative flex inline-flex md:mt-2">
+                    <label for="temp_target" class="mr-2 leading-tight text-lg">Temp target:</label>
+                    <input class="w-1/12 leading-tight focus:outline-none border border-indigo-200 rounded" type="number"
+                        placeholder="25" />
+                </form>
+                <button
+                    class="flex flex-start mt-1 w-1/4 md:w-1/6 md:leading-tight md:text-lg justify-center hover:bg-indigo-100 hover:bg-indigo-200 border-indigo-100 text-sm border-4 rounded"
+                    type="button">
+                    Submit
+                </button>
+            </div>
+
+            <!--Humidity Tracker-->
+            <div id="humidity_tracker" class="flex flex-col justify-start mt-1 md:mt-2" style="display:none;">
+                <span class="text-xl font-semibold">Humidity Tracker</span>
+                <div class="relative flex flex-row justify-start mt-1 md:mt-2">
+                    <label for="side_temp" class="mr-2 leading-tight text-lg">Side:</label>
+                    <select
+                        class="flex inline-flex float-right text-sm w-auto apperance-none bg-white border border-indigo-100 hover:border-indigo-200 rounded shadow focus:outline-none lg:text-md">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+                    </select>
+                </div>
+                <form class="relative flex inline-flex md:mt-2">
+                    <label for="temp_target" class="mr-2 leading-tight text-lg">Humidity target:</label>
+                    <input class="w-1/12 leading-tight focus:outline-none border border-indigo-200 rounded" type="number"
+                        placeholder="25" />
+                </form>
+                <button
+                    class="flex flex-start mt-1 md:justify-center w-1/4 md:w-1/6 md:leading-tight md:text-lg justify-center hover:bg-indigo-100 hover:bg-indigo-200 border-indigo-100 text-sm border-4 rounded"
+                    type="button">
+                    Submit
+                </button>
+            </div>
+
+            <!--Weather-->
+            <div id="weather" class="flex flex-col justify-start mt-1 md:mt-2" style="display:none;">
+                <span class="text-xl font-semibold">Weather Forecast</span>
+                <div class="relative flex flex-row justify-start mt-1 md:mt-2">
+                    <label for="side_temp" class="mr-2 leading-tight text-lg">Side:</label>
+                    <select
+                        class="flex inline-flex float-right text-sm w-auto apperance-none bg-white border border-indigo-100 hover:border-indigo-200 rounded shadow focus:outline-none lg:text-md">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+                    </select>
+                </div>
+                <button
+                    class="flex flex-start w-1/4 mt-1 md:w-1/6 md:leading-tight md:text-lg justify-center hover:bg-indigo-100 hover:bg-indigo-200 border-indigo-100 text-sm border-4 rounded"
+                    type="button">
+                    Submit
+                </button>
+            </div>
+
+            <!--Notification Tracker-->
+            <div id="notifications" class="flex flex-col justify-start mt-1 md:mt-2" style="display:none;">
+                <span class="text-xl font-semibold">Notification Tracker:</span>
+                <div class="relative flex flex-row justify-start mt-1 md:mt-2">
+                    <label for="side_temp" class="mr-2 leading-tight text-lg">Side:</label>
+                    <select
+                        class="flex inline-flex float-right text-sm w-auto apperance-none bg-white border border-indigo-100 hover:border-indigo-200 rounded shadow focus:outline-none lg:text-md">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+                    </select>
+                </div>
+                <div class="mt-1">
+                    <span class="leading-tight text-lg">Notification Tracker:</span>
+                    <div class="mt-1">
+                        <label class="inline-flex items-center">
+                            <input type="radio" class="form-radio" name="notificationsType" value="vibrate">
+                            <span class="ml-2">Vibrate</span>
+                        </label>
+                        <label class="inline-flex items-center ml-6">
+                            <input type="radio" class="form-radio" name="notificationsType" value="lights">
+                            <span class="ml-2">Lights</span>
+                        </label>
+                        <label class="inline-flex items-center ml-6">
+                            <input type="radio" class="form-radio" name="notificationsType" value="both">
+                            <span class="ml-2">Both</span>
+                        </label>
+                    </div>
+                </div>
+                <button
+                    class="flex flex-start w-1/4 mt-1 md:w-1/6 md:leading-tight md:text-lg justify-center hover:bg-indigo-100 hover:bg-indigo-200 border-indigo-100 text-sm border-4 rounded"
+                    type="button">
+                    Submit
+                </button>
+            </div>
+        </section>
+
+        <!-- Current stats section -->
+        <section>
+            <!-- Add elements to display current status of cube -->
+        </section>
     </main>
     <span class="mx-auto mt-2 text-sm">By Alex, Pavel, Joel and Dan</h1>
         <script>
