@@ -147,7 +147,7 @@ io.on("connection", (socket) => {
 
     // Handle updates from client
     socket.on('update_cube_side', function (data) {
-        mqtt_client.publish("update_from_client", data)
+        mqtt_client.publish("update_from_client", JSON.stringify(data))
         console.log("[+] Side update from client: " + JSON.stringify(data))
     });
 
@@ -165,7 +165,7 @@ io.on("connection", (socket) => {
         
         // Update client and Cube
         io.emit("weather_update", weather_full)
-        mqtt_client.publish("weather_update", weather_short)
+        mqtt_client.publish("weather_update", JSON.stringify(weather_short))
     });
 
 });
