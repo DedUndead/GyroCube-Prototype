@@ -4,7 +4,15 @@ const flash = require('connect-flash')
 const session = require('express-session');
 const passport = require('passport');
 const mongoStore = require('connect-mongo');
+const https = require('https');
+const mqtt = require('async-mqtt');
+const { Server } = require("socket.io");
+const { createServer } = require("http");
 const app = express();
+
+// Socket set.up
+const httpServer = createServer(app);
+const io = new Server(httpServer);
 
 // Database keys
 const db = require('./config/keys').MongoURI;
@@ -16,6 +24,42 @@ const Users = require('./models/Users');
 mongoose.connect(db, { useNewUrlParser: true })
     .then(() => console.log("MongoDB connected"))
     .catch(err => console.log(err));
+
+
+// MQTT Config
+const mqtt_client = mqtt.connect('mqtt://127.0.0.1:9999')
+
+mqtt_client.on('connect', function () {
+    mqtt_client.subscribe('/cubus_testing', function (err) {
+        if (err) {
+            console.log("error encountered")
+            mqtt_client.reconnect()
+        }
+        else {
+            console.log("Well hello there 8)")
+        }
+    })
+})
+
+// Handle new mqtt message
+mqtt_client.on('message', async function (topic, message) {
+    let input = JSON.parse(message)
+    console.log("Received: " + JSON.stringify(input))
+    // io.emit("stats", input);
+});
+
+// WebSocket conf
+io.on("connection", (socket) => {
+    console.log("New connection: " + socket.id);
+
+    // Handle updates from client
+    socket.on('update_cube_side', function (data) {
+        // Handle updates from cube
+    });
+
+});
+
+
 
 
 // Pasport config
@@ -52,6 +96,6 @@ app.use('/', require('./routes/login'));
 
 const PORT = 3000; 
 
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+httpServer.listen(PORT, () => {
+    console.log(`server running on port ${PORT}`)
 })

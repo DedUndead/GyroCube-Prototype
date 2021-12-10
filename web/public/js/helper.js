@@ -1,7 +1,3 @@
-const https = require('https')
-
-// WEATHER API FUNCTIONALITY
-
 // Curr date in api format
 function get_current_date(){
     return new Date().toISOString().
@@ -98,25 +94,12 @@ async function get_current_weather_state(city) {
 
 }
 
-
-// LED LAMP COLOR
-function rgb_to_hex(red, green, blue) {
-
-    if (red > 255)      { red = 255 }
-    if (green > 255)    { green = 255 }
-    if (blue > 255)     { blue = 255 }
-
-    return '#' + red.toString(16)
-        + green.toString(16)
-        + blue.toString(16)
-}
-
 // FUNCTIONS TO MAP ON CUBE
-function map_color(side, r, g, b) {
+function map_color(side, color) {
     let block = {
         side: side,
         func: 0,
-        color: rgb_to_hex(r, g, b),
+        color: color,
         target: 0
     }
 
@@ -167,14 +150,14 @@ function map_idle(side) {
     console.log('[MQTT] Publishing: ' + JSON.stringify(block))
 }
 
-function notify(side, type, r = 0, g = 0, b = 0) {
+function notify(side, type, color = '#000000') {
     let block
 
     if (type == 2 || type == 1) {
         block = {
             side: side,
             func: 4,
-            color: rgb_to_hex(r, g, b),
+            color: color,
             target: type
         }
     }
@@ -189,13 +172,3 @@ function notify(side, type, r = 0, g = 0, b = 0) {
 
     console.log('[MQTT] Publishing: ' + JSON.stringify(block))
 }
-
-async function main () {
-    // await get_current_weather_state('Oslo')
-    // let x = rgb_to_hex(255, 255, 255)
-    map_color(4, 128, 255, 64)
-
-    // console.log(x)
-}
-
-main()
