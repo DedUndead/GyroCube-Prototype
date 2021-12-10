@@ -279,9 +279,7 @@
         <script>
 
             document.getElementById('functionality').addEventListener("change", function (e) {
-                console.log(e.target.value)
                 const target = e.target.value.toLowerCase().replace(" ", "_")
-                console.log(target)
 
                 switch(target) {
                     case "simple_color":
@@ -353,17 +351,9 @@
                 document.getElementById('notif_color').style.display = 'block';
             })
 
-
-
-            /*
-                <option>simple_color</option>
-                <option>temp_tracker</option>
-                <option>humidity_tracker</option>
-                <option>notifications</option>
-                <option>weather</option>
-            */
         </script>
     </body>
+    <script src="https://cdn.socket.io/4.2.0/socket.io.min.js" integrity="sha384-PiBR5S00EtOj2Lto9Uu81cmoyZqR57XcOna1oAuVuIEjzj0wpqDVfD0JA9eXlRsj"crossorigin="anonymous"></script>
     <script src="/js/helper.js"></script>
     <script src="/js/sockets.js"></script>
     <script src="/js/handler.js"></script>
