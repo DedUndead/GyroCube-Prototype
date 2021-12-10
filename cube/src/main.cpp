@@ -10,7 +10,7 @@
 #include "actuator/NeoPixel.h"
 #include "actuator/VibrationMotor.h"
 #include "state_machine/Gyrocube.h"
-
+#include "interface/XBee.h"
 /* Macros and global variables */
 #define BAUDRATE          250 * 1000
 #define ACC_BUFFER_LENGTH 2

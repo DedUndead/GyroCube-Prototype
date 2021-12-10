@@ -30,6 +30,7 @@ target_sources(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/src/actuator/VibrationMotor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/inc/state_machine/Event.h
     ${CMAKE_CURRENT_LIST_DIR}/src/state_machine/Gyrocube.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/interface/XBee.cpp
 )
 
 # Create map/bin/hex/uf2 files
