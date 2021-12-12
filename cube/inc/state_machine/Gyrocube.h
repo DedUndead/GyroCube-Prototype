@@ -19,11 +19,17 @@
 class Gyrocube;
 
 typedef void (Gyrocube::*state_ptr)(const Event &);
+
 typedef struct side_settings {
     uint8_t function;
     uint32_t color;
     int target;
 } side_settings;
+
+typedef struct machine_state {
+    int humidity;
+    int temperature;
+} machine_state;
 
 /**
  * @brief Abstraction of gyrocube system in form of a state machine
@@ -61,6 +67,7 @@ private:
     void vibrate();
     void appear(uint32_t color);
     void set_state(uint8_t state_index);
+    void update_measurements();
 
     // Support variables
     int timer;                       // Timer for filtering tick events
@@ -68,6 +75,11 @@ private:
     bool function_changed;           // Flag identifes change of the function
     uint8_t current_side;            // Current cube's placement
     side_settings settings[N_SIDES]; // Setting individual for each side
+    machine_state state;             // Current measurements and errors of the cube
+
+    // Weather color array used by weather functions
+    uint32_t weather_colors[N_WEATHER_COLORS];
+    uint8_t weather_color_index;
 
     // Sensors and actuators
     Hih6020* sensor;
@@ -76,9 +88,7 @@ private:
 
     // State pointer array to quickly call needed state based on side's setting
     void (Gyrocube::*functional_states[N_SIDES])(const Event&);
-    // Weather-color array
-    uint32_t weather_colors[N_WEATHER_COLORS];
-    uint8_t weather_color_index;
+
 };
 
 

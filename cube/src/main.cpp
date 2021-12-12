@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include "hardware/pio.h"
@@ -14,11 +13,11 @@
 /* Macros and global variables */
 #define BAUDRATE          250 * 1000
 #define ACC_BUFFER_LENGTH 2
-#define SDA_PIN           0
-#define SCL_PIN           1
-#define NEOPIXEL_PIN      17
-#define MOTOR_PIN         16
-#define NEOPIXEL_LEN      30
+#define SDA_PIN           16
+#define SCL_PIN           17
+#define NEOPIXEL_PIN      5
+#define MOTOR_PIN         15
+#define NEOPIXEL_LEN      4
 #define TICK_LENGTH       500
 #define SAMPLING_RATE     2
 

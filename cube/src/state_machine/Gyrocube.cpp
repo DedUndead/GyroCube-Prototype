@@ -197,6 +197,8 @@ void Gyrocube::state_lamp(const Event& e)
 
             break;
         case Event::eTick:
+            update_measurements();
+
             if (function_changed) {
                 function_changed = false;
                 set_state(settings[current_side].function);
@@ -239,6 +241,8 @@ void Gyrocube::state_temp(const Event& e)
             
             break;
         case Event::eTick:
+            update_measurements();
+
             if (function_changed) {
                 function_changed = false;
                 set_state(settings[current_side].function);
@@ -277,6 +281,8 @@ void Gyrocube::state_humid(const Event& e)
 
             break;
         case Event::eTick:
+            update_measurements();
+
             if (function_changed) {
                 function_changed = false;
                 set_state(settings[current_side].function);
@@ -316,6 +322,8 @@ void Gyrocube::state_weather(const Event& e)
 
             break;
         case Event::eTick:
+            update_measurements();
+
             if (function_changed) {
                 set_state(settings[current_side].function);
             }
@@ -361,9 +369,13 @@ void Gyrocube::state_notification(const Event& e)
 
             break;
         case Event::eTick:
+            update_measurements();
+            
             if (function_changed) {
                 set_state(settings[current_side].function);
             }
+
+            break;
         case Event::eNotify:
             notify();
 
@@ -401,16 +413,15 @@ void Gyrocube::clear()
  */
 void Gyrocube::display_temperature()
 {
-    int temperature = sensor->read_temperature();
     // Display error
-    if (temperature == HIH_ERROR_STATUS) {
+    if (state.temperature == HIH_ERROR_STATUS) {
         appear(I2C_ERROR_COLOR);
         vibrate();
         return;
     }
     
     // Calculate difference value and make sure it doesnt exceed limit
-    float difference = settings[current_side].target - temperature;
+    float difference = settings[current_side].target - state.temperature;
     if      (difference > TEMP_MAX_DIFFERENCE)      difference = TEMP_MAX_DIFFERENCE;
     else if (difference < -1 * TEMP_MAX_DIFFERENCE) difference = -1 * TEMP_MAX_DIFFERENCE;
 
@@ -438,16 +449,15 @@ void Gyrocube::display_temperature()
  */
 void Gyrocube::display_humidity()
 {
-    int humidity = sensor->read_humidity();
     // Display error
-    if (humidity == HIH_ERROR_STATUS) {
+    if (state.humidity == HIH_ERROR_STATUS) {
         appear(I2C_ERROR_COLOR);
         vibrate();
         return;
     }
     
     // Calculate difference value and make sure it doesnt exceed limit
-    float difference = abs(settings[current_side].target - humidity);
+    float difference = abs(settings[current_side].target - state.humidity);
     if (difference > HUMID_MAX_DIFFERENCE) difference = HUMID_MAX_DIFFERENCE;
 
     // Humidity matches target
@@ -502,4 +512,14 @@ void Gyrocube::appear(uint32_t color)
         sleep_ms(30);
     }
     leds->fill(0x000000);
+}
+
+/**
+ * @brief Update internal measurements of the machine
+ */
+void Gyrocube::update_measurements()
+{
+    // Fetch data once and use one reading to update buffer
+    state.humidity = sensor->read_humidity();
+    state.temperature = sensor->read_temperature(false);
 }

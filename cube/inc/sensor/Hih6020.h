@@ -17,8 +17,8 @@
 class Hih6020 {
 public:
     Hih6020(I2C* i2c_, uint address_ = DEFAULT_ADDRESS);
-    int read_humidity();
-    int read_temperature();
+    int read_humidity(bool fetch = true);
+    int read_temperature(bool fetch = true);
 private:
     bool fetch_data();
     int convert_humidity(const uint16_t& humidity);
