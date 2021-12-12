@@ -43,7 +43,7 @@ Gyrocube::Gyrocube(
     for (uint8_t i = 0; i < N_SIDES; i++) {
         settings[i].function = i;
         settings[i].color = 0xff0000;
-        settings[i].target = 25;
+        settings[i].target = 0;
     }
     
     // Set initial state according to state machine's mode
@@ -430,7 +430,7 @@ void Gyrocube::display_temperature()
         leds->fill(0x00, 0xff, 0x00);
     }
     // Green->red gradient
-    else if (difference > 0) {
+    else if (difference < 0) {
         leds->interpolate(
             0x00ff00, 0xff0000, abs(difference) / TEMP_MAX_DIFFERENCE
         );
