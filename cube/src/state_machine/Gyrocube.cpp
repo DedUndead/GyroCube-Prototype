@@ -122,6 +122,15 @@ void Gyrocube::update_weather(uint8_t new_color_index)
 }
 
 /**
+ * @brief Get current machine measurement
+ * @return machine_state Current machine measurements
+ */
+machine_state Gyrocube::get_info()
+{
+    return state;
+}
+
+/**
  * @brief Startup event
  * Waits for the hub's ACK
  */

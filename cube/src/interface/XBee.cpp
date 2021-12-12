@@ -26,55 +26,70 @@ XBee::XBee(uart_inst_t* uart_, uint8_t txpin, uint8_t rxpin, uint8_t ctspin, uin
     gpio_set_dir(statuspin, GPIO_IN);
     gpio_put(wokepin, true);
 }
+
 /**
  * @brief Send a string to the uart
  * Wake up the device if needed
  * @param s string to be sent
+ * @param len Length of the tx buffer
  */
-void XBee::sendData(const char *s){
-    if(checkStatus()){
-        uart_puts(uart, s);
+void XBee::send_data(const uint8_t *s, size_t len){
+    if (check_status()) {
+        uart_write_blocking(uart, s, len);
     }
-    else{
-        wakeUp();
-        uart_puts(uart, s);
+    else {
+        wake_up();
+        uart_write_blocking(uart, s, len);
     }
 }
+
 /**
  * @brief Send a character to the uart
  * Wake up the device if needed
  * @param c character to be sent
  */
-void XBee::sendData(char c){
-    if(checkStatus()){
+void XBee::send_data(char c)
+{
+    if (check_status()) {
         uart_putc(uart, c);
     }
-    else{
-        wakeUp();
+    else {
+        wake_up();
         uart_putc(uart, c);
     }
 }
+
 /**
- * @brief read a character from the UART
- * @return char read or 0 if uart is empty
+ * @brief Read data from uart to local buffer
+ * @param buffer Pointer to buffer
+ * @param len    Length of buffer
+ * @return       True if buffer filled, false otherwise
  */
-char XBee::getData(){
-    if(uart_is_readable(uart)){
-        return uart_getc(uart);
+bool XBee::get_data(uint8_t* buffer, size_t len)
+{
+    if (uart_is_readable(uart)) {
+        uart_read_blocking(uart, buffer, len);
+        return true;
     }
-    else return 0;
+
+    return false;
 }
+
 /**
  * @brief Wake up the device by driving pin high->low
  */
-void XBee::wakeUp(){
+void XBee::wake_up()
+{
     gpio_put(wokepin, false);
     sleep_ms(1);
     gpio_put(wokepin, true);
 }
+
 /**
  * @brief Check if device is sleeping
  * @return bool 
- */bool XBee::checkStatus(){
+ */
+bool XBee::check_status()
+{
     return gpio_get(statuspin);
 }

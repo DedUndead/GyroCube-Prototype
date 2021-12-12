@@ -47,6 +47,7 @@ public:
     void handle_state(const Event& e);
     void update_settings(uint8_t side, side_settings new_setting);
     void update_weather(uint8_t new_color_index);
+    machine_state get_info();
 private:
     // States and state handlers
     state_ptr current_state;
