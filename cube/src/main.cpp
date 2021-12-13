@@ -115,13 +115,15 @@ int main()
 
         // Machine status update -> to hub
         if (zigbee_send) {
-            forward_measurements(gyrocube, current_side, zigbee);
+            //forward_measurements(gyrocube, current_side, zigbee);
 
             zigbee_send = false;
         }
 
         // New data from hub
-        if (zigbee.get_data((uint8_t *)zigbee_buffer, ZIGBEE_BUFFER_LEN)) {
+        if (zigbee.get_data((uint8_t *)zigbee_buffer, ZIGBEE_BUFFER_LEN) > 0) {
+            zigbee.send_data(zigbee_buffer);
+            
             // Notification arrived
             if (zigbee_buffer[0] == 'n') {
                 gyrocube.handle_state(Event(Event::eNotify));
@@ -225,5 +227,5 @@ void forward_measurements(Gyrocube& gyrocube, uint8_t side, XBee& zigbee)
         measurements.temperature
     );
 
-    zigbee.send_data((uint8_t *)message, ZIGBEE_BUFFER_LEN);
+    zigbee.send_data(message);
 }

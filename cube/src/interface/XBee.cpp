@@ -1,4 +1,5 @@
 #include "interface/XBee.h"
+#include <stdio.h>
 
 /**
  * @brief XBee UART interface
@@ -33,14 +34,9 @@ XBee::XBee(uart_inst_t* uart_, uint8_t txpin, uint8_t rxpin, uint8_t ctspin, uin
  * @param s string to be sent
  * @param len Length of the tx buffer
  */
-void XBee::send_data(const uint8_t *s, size_t len){
-    if (check_status()) {
-        uart_write_blocking(uart, s, len);
-    }
-    else {
-        wake_up();
-        uart_write_blocking(uart, s, len);
-    }
+void XBee::send_data(const char *s){
+    if (!is_active()) wake_up();
+    uart_puts(uart, s);
 }
 
 /**
@@ -50,33 +46,32 @@ void XBee::send_data(const uint8_t *s, size_t len){
  */
 void XBee::send_data(char c)
 {
-    if (check_status()) {
-        uart_putc(uart, c);
-    }
-    else {
-        wake_up();
-        uart_putc(uart, c);
-    }
+    if (!is_active()) wake_up();
+    uart_putc(uart, c);
 }
 
 /**
  * @brief Read data from uart to local buffer
  * @param buffer Pointer to buffer
  * @param len    Length of buffer
- * @return       True if buffer filled, false otherwise
+ * @return       Number of characters received
  */
-bool XBee::get_data(uint8_t* buffer, size_t len)
+int XBee::get_data(uint8_t* buffer, size_t len)
 {
+    // NOTE: CONTENTS OF UART_READ_BLOCKING SDK FUNCTION
+    // WERE MODIFIED. MODIFICATION IS AVAILABLE IN DOCS
     if (uart_is_readable(uart)) {
-        uart_read_blocking(uart, buffer, len);
-        return true;
+        int received = uart_read_blocking(uart, buffer, len);
+        buffer[received] = '\0'; // Terminate string
+
+        return received;
     }
 
-    return false;
+    return 0;
 }
 
 /**
- * @brief Wake up the device by driving pin high->low
+ * @brief Wake up the device by driving pin low->high
  */
 void XBee::wake_up()
 {
@@ -89,7 +84,7 @@ void XBee::wake_up()
  * @brief Check if device is sleeping
  * @return bool 
  */
-bool XBee::check_status()
+bool XBee::is_active()
 {
     return gpio_get(statuspin);
 }
