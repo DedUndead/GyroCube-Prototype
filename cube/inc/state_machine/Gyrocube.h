@@ -89,7 +89,6 @@ private:
 
     // State pointer array to quickly call needed state based on side's setting
     void (Gyrocube::*functional_states[N_SIDES])(const Event&);
-
 };
 
 

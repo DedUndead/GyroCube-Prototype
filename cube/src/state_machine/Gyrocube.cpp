@@ -24,28 +24,28 @@ Gyrocube::Gyrocube(
 ) :
     update_required(false),
     timer(0),
+    settings {
+        { 0, 0x000000, 0 },
+        { 1, 0xff00ff, 0 },
+        { 2, 0x000000, 25 },
+        { 3, 0x000000, 25 },
+        { 4, 0x000000, 0 },
+        { 5, 0xff0000, 2 }
+    },
     sensor(sensor_),
     leds(leds_),
     motor(motor_),
-    functional_states { 
-        &Gyrocube::state_idle,    &Gyrocube::state_lamp,
-        &Gyrocube::state_temp,    &Gyrocube::state_humid,
-        &Gyrocube::state_weather, &Gyrocube::state_notification
-    },
     weather_colors {
         0xc0f6fb, 0xdddfdf, 0xdddfdf, 0xc2c2c2, 0xc2c2c2,
         0xdddfdf, 0xc0f6fb, 0xdddfdf, 0xf2f27a, 0xf0a144,
     },
-    weather_color_index(0)
-{
-    // TODO: Replace initial settings with file saved settings
-    // Move to function
-    for (uint8_t i = 0; i < N_SIDES; i++) {
-        settings[i].function = i;
-        settings[i].color = 0xff0000;
-        settings[i].target = 0;
+    weather_color_index(0),
+    functional_states { 
+        &Gyrocube::state_idle,    &Gyrocube::state_lamp,
+        &Gyrocube::state_temp,    &Gyrocube::state_humid,
+        &Gyrocube::state_weather, &Gyrocube::state_notification
     }
-    
+{    
     // Set initial state according to state machine's mode
     current_side = side;
     if (!standalone) current_state = &Gyrocube::startup;
@@ -169,6 +169,7 @@ void Gyrocube::state_idle(const Event& e)
 
             break;
         case Event::eTick:
+            update_measurements();
             if (function_changed) {
                 function_changed = false;
                 set_state(settings[current_side].function);

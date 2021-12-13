@@ -53,21 +53,20 @@ void XBee::send_data(char c)
 /**
  * @brief Read data from uart to local buffer
  * @param buffer Pointer to buffer
- * @param len    Length of buffer
+ * @param len    Maximum length of buffer
  * @return       Number of characters received
  */
 int XBee::get_data(uint8_t* buffer, size_t len)
 {
-    // NOTE: CONTENTS OF UART_READ_BLOCKING SDK FUNCTION
-    // WERE MODIFIED. MODIFICATION IS AVAILABLE IN DOCS
-    if (uart_is_readable(uart)) {
-        int received = uart_read_blocking(uart, buffer, len);
-        buffer[received] = '\0'; // Terminate string
+    int num = 0;
 
-        return received;
+    while (uart_is_readable(uart) && num < len) {
+        buffer[num] = uart_getc(uart);
+        num++;
     }
+    buffer[num] = '\0';
 
-    return 0;
+    return num;
 }
 
 /**

@@ -52,11 +52,14 @@ bool irq_timer(repeating_timer *rt)
 
     // Set other flag ready
     tick_counter++;
-    if (tick_counter == SAMPLING_RATE) {
+    if (tick_counter % SAMPLING_RATE == 0) {
         sample_side = true;
-        zigbee_send = true;
-
         sampling_index = !sampling_index; 
+    }
+
+    // Set flag measurements ready
+    if (tick_counter % SAMPLING_RATE == 0) {
+        zigbee_send = true;
         tick_counter = 0;
     }
 
@@ -72,8 +75,8 @@ int main()
     /* Initialize periherals and interfaces */
     I2C i2c(i2c0, BAUDRATE, SDA_PIN, SCL_PIN);
     Hih6020 hih6020(&i2c);
-    Accelerometer accelerometer(&i2c);
     NeoPixel leds(pio0, NEOPIXEL_PIN, NEOPIXEL_LEN);
+    Accelerometer accelerometer(&i2c);
     VibrationMotor motor(MOTOR_PIN);
 
     XBee zigbee(
@@ -115,24 +118,24 @@ int main()
 
         // Machine status update -> to hub
         if (zigbee_send) {
-            //forward_measurements(gyrocube, current_side, zigbee);
+            forward_measurements(gyrocube, current_side, zigbee);
 
             zigbee_send = false;
         }
 
         // New data from hub
         if (zigbee.get_data((uint8_t *)zigbee_buffer, ZIGBEE_BUFFER_LEN) > 0) {
-            zigbee.send_data(zigbee_buffer);
-            
             // Notification arrived
             if (zigbee_buffer[0] == 'n') {
                 gyrocube.handle_state(Event(Event::eNotify));
             }
-            // Weather update arived
+            // Weather update arrived
+            // Doesn't work in curent implementation
             else if (zigbee_buffer[0] == 'w') {
                 update_weather(gyrocube, zigbee_buffer);
             }
             // Settings update arrived
+            // Doesn't work in current implementation
             else if (zigbee_buffer[0] == 's') {
                 update_settings(gyrocube, zigbee_buffer);
             }
@@ -167,33 +170,32 @@ void handle_accelerometer_sample(Gyrocube& gyrocube, uint8_t* buffer, uint8_t& c
 {
     if (buffer[0] == buffer[1] && buffer[1] != current_side) {
         current_side = buffer[0];
-        printf("Current side %d\n", current_side);
         gyrocube.handle_state(Event(Event::eChange, current_side));
     }
 }
 
-/**
+/** Doesn't work in current implementation
  * @brief Update settings of the side from zigbee buffer
  * @param gyrocube      Target cube's state machine
  * @param zigbee_buffer Zigbee buffer
  */
 void update_settings(Gyrocube& gyrocube, char* zigbee_buffer)
 {
-    side_settings new_settings;
-    uint8_t side_to_update;
+    side_settings new_settings = { 0, 0, 0 };
+    uint8_t side_to_update = 0;
 
-    sscanf(
-        zigbee_buffer, "s%d %d %d %d", 
+    if (sscanf(
+        zigbee_buffer, "s%u %u %u %d", 
         &side_to_update,
         &new_settings.function, 
         &new_settings.color, 
         &new_settings.target
-    );
-
-    gyrocube.update_settings(side_to_update, new_settings);
+    ) == 4) {
+        gyrocube.update_settings(side_to_update, new_settings);
+    }
 }
 
-/**
+/** Doesn't work in current implementation
  * @brief Update weather in the cube's settings from zigbee buffer
  * @param gyrocube      Target cube's state machine
  * @param zigbee_buffer Zigbee buffer
@@ -228,4 +230,5 @@ void forward_measurements(Gyrocube& gyrocube, uint8_t side, XBee& zigbee)
     );
 
     zigbee.send_data(message);
+    sleep_ms(50);
 }
