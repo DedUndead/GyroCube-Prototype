@@ -91,30 +91,41 @@ int main(void) {
 	while (true) {
 		// Bridge the message from web to cube
 		if (mqtt_message_arrived) {
+			uart.write(mqtt_message + "\r\n");
 			// Setting package simplification
 			if (mqtt_message.find("side") != std::string::npos) {
 				std::string to_cube = get_settings_notification();
 				uart.write(to_cube + "\r\n"); //DEBUG
 				zigbee.write(to_cube);
+
+				delay_systick(10);
 			}
 			// Notification package simplification
 			else if (mqtt_message.find("notif") != std::string::npos) {
 				zigbee.write("n");
+
+				delay_systick(10);
 			}
 			// Weather package simplification
 			else if (mqtt_message.find("weather") != std::string::npos) {
 				std::string to_cube = get_weather_notification();
 				uart.write(to_cube + "\r\n"); //DEBUG
 				zigbee.write(to_cube);
+
+				delay_systick(10);
 			}
 
 			mqtt_message_arrived = false;
 		}
 
 		// Bridge message from cube to web
-		if (zigbee.read(zigbee_buffer, ZIGBEE_BUFFER_LENGTH) > 0) {
+		int receive = zigbee.read(zigbee_buffer, ZIGBEE_BUFFER_LENGTH);
+		if (receive > 0) {
+			zigbee_buffer[receive] = '\0';
+
 			std::string to_web = get_sample_json(zigbee_buffer);
-			uart.write(to_web + "\r\n"); // DEBUG
+			uart.write(zigbee_buffer); // DEBUG
+			uart.write("\r\n");
 			mqtt.publish(MQTT_TOPIC_SEND, to_web, to_web.length());
 		}
 
@@ -141,7 +152,7 @@ std::string get_settings_notification()
 {
 	nlohmann::json settings = nlohmann::json::parse(mqtt_message);
 	uint8_t  side     = settings.value("side", 0);
-	uint8_t  function = settings.value("function", 0);
+	uint8_t  function = settings.value("func", 0);
 	uint32_t color    = settings.value("color", 0);
 	int      target   = settings.value("target", 0);
 
