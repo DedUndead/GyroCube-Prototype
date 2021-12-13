@@ -1,10 +1,10 @@
 /*
 ===============================================================================
- Name        : main.c
- Author      : Arefyev Pavel, Daniel Liberman, Alex Franko
+ Name        : Gyrocube Prototype Project
+ Author      : Arefyev Pavel, Daniel Liberman, Alex Franko, Joel Kontas
  Version     : X
  License     : GPL-2.0 License
- Description : https://github.com/DedUndead/ABB-Vent-Control
+ Description : https://github.com/DedUndead/GyroCube-Prototype
 ===============================================================================
 */
 
@@ -15,23 +15,33 @@
 #include "delay.h"
 #include "uart/lpcuart.h"
 #include "mqtt/mqtt.h"
+#include "json/json.hpp"
 
-#define MQTT_IP              (char *)"MQTT_IP_HERE"
+/* Macros and global variables */
+#define TICKRATE_HZ          1000
+#define MQTT_IP              (char *)"18.198.188.151"
 #define MQTT_PORT            21883
-#define NETWORK_SSID         (char *)"NETWORK_SSID_HERE"
-#define NETWORK_PASS         (char *)"NETWORK_PASS_HERE"
+#define NETWORK_SSID         (char *)"V46D-1"
+#define NETWORK_PASS         (char *)"2483124831"
 #define MQTT_TOPIC_RECEIVE   (const char *)"/gyro/web"
 #define MQTT_TOPIC_SEND      (const char *)"/gyro/hub"
-
-void set_systick(const int& freq);
-void mqtt_message_handler(MessageData* data);
-void ERROR_CONDITION();
+#define MQTT_YIELD_TIME      100
+#define ZIGBEE_BUFFER_LENGTH 100
 
 static volatile std::atomic_int delay(0);
 static volatile uint32_t systicks(0);
 static std::string mqtt_message("");
 static bool mqtt_message_arrived(false);
 
+/* Function declarations */
+std::string get_settings_notification();
+std::string get_weather_notification();
+std::string get_sample_json(char* sample_str);
+void set_systick(const int& freq);
+void mqtt_message_handler(MessageData* data);
+void ERROR_CONDITION();
+
+/* Interrupt handlers */
 extern "C" {
 	void SysTick_Handler(void)
 	{
@@ -50,35 +60,128 @@ int main(void) {
 #endif
 #endif
 
+    set_systick(TICKRATE_HZ);
+
     /* Configure MQTT */
     MQTT mqtt(mqtt_message_handler);
-    mqtt.connect(NETWORK_SSID, NETWORK_PASS, MQTT_IP, MQTT_PORT);
-    mqtt.subscribe(MQTT_TOPIC_RECEIVE);
+    int mqtt_status;
+    mqtt_status = mqtt.connect(NETWORK_SSID, NETWORK_PASS, MQTT_IP, MQTT_PORT);
+    mqtt_status = mqtt.subscribe(MQTT_TOPIC_RECEIVE);
 
-    /* Remove after debugging finished */
 	LpcPinMap none = {-1, -1}; // unused pin has negative values in it
-	LpcPinMap txpin = { 0, 18 }; // transmit pin that goes to debugger's UART->USB converter
-	LpcPinMap rxpin = { 0, 13 }; // receive pin that goes to debugger's UART->USB converter
-	LpcUartConfig cfg = { LPC_USART0, 115200, UART_CFG_DATALEN_8 | UART_CFG_PARITY_NONE | UART_CFG_STOPLEN_1, false, txpin, rxpin, none, none };
-	LpcUart uart(cfg);
+	LpcPinMap tx = { 0, 18 }; // transmit pin that goes to debugger's UART->USB converter
+	LpcPinMap rx = { 0, 13 }; // receive pin that goes to debugger's UART->USB converter
+	LpcUartConfig cfgdbg = { LPC_USART0, 115200, UART_CFG_DATALEN_8 | UART_CFG_PARITY_NONE | UART_CFG_STOPLEN_1, false, tx, rx, none, none };
+	LpcUart uart(cfgdbg);
+
+    /* Serial communication with zigbee module */
+	LpcPinMap txpin = { 0, 0 };
+	LpcPinMap rxpin = { 1, 3 };
+	LpcPinMap cts =   { 0, 9 };
+	LpcUartConfig cfg = {
+			LPC_USART1, 9600,
+			UART_CFG_DATALEN_8 | UART_CFG_PARITY_NONE | UART_CFG_STOPLEN_1,
+			false,
+			txpin, rxpin, none, cts
+	};
+	LpcUart zigbee(cfg);
+
+	char zigbee_buffer[ZIGBEE_BUFFER_LENGTH];
 
 	while (true) {
 		// Bridge the message from web to cube
 		if (mqtt_message_arrived) {
-			// Send to cube
+			// Setting package simplification
+			if (mqtt_message.find("side") != std::string::npos) {
+				std::string to_cube = get_settings_notification();
+				uart.write(to_cube + "\r\n"); //DEBUG
+				zigbee.write(to_cube);
+			}
+			// Notification package simplification
+			else if (mqtt_message.find("notif") != std::string::npos) {
+				zigbee.write("n");
+			}
+			// Weather package simplification
+			else if (mqtt_message.find("weather") != std::string::npos) {
+				std::string to_cube = get_weather_notification();
+				uart.write(to_cube + "\r\n"); //DEBUG
+				zigbee.write(to_cube);
+			}
+
 			mqtt_message_arrived = false;
 		}
 
-		// Bridge the message from cube to web
-		// if (zigbee_message_arrived) {
-			//mqtt.send(message);
-		//}
+		// Bridge message from cube to web
+		if (zigbee.read(zigbee_buffer, ZIGBEE_BUFFER_LENGTH) > 0) {
+			std::string to_web = get_sample_json(zigbee_buffer);
+			uart.write(to_web + "\r\n"); // DEBUG
+			mqtt.publish(MQTT_TOPIC_SEND, to_web, to_web.length());
+		}
+
+		// Gather mqtt data
+		mqtt_status = mqtt.yield(MQTT_YIELD_TIME);
+
+		// Reconnect to mqtt
+		while (mqtt_status != 0) {
+			uart.write("Connection lost\r\n");
+		    mqtt_status = mqtt.connect(NETWORK_SSID, NETWORK_PASS, MQTT_IP, MQTT_PORT);
+		    mqtt_status = mqtt.subscribe(MQTT_TOPIC_RECEIVE);
+		}
 	}
 
     return 0;
 }
 
 /* SUPPORT FUNCTIONS DEFINITIONS */
+
+/**
+ * @brief Construct message to cube containing settings update
+ */
+std::string get_settings_notification()
+{
+	nlohmann::json settings = nlohmann::json::parse(mqtt_message);
+	uint8_t  side     = settings.value("side", 0);
+	uint8_t  function = settings.value("function", 0);
+	uint32_t color    = settings.value("color", 0);
+	int      target   = settings.value("target", 0);
+
+	return "s" + std::to_string(side)      + " " +
+			     std::to_string(function)  + " " +
+				 std::to_string(color)     + " " +
+				 std::to_string(target);
+}
+
+/**
+ * @brief Construct message to cube containing weather update
+ */
+std::string get_weather_notification()
+{
+	nlohmann::json weather = nlohmann::json::parse(mqtt_message);
+	int index = weather.value("weather", 0);
+
+	return "w" + std::to_string(index);
+}
+
+/**
+ * @brief Construct sample from zigbee message
+ * @param sample_str Zigbee message
+ * @return           String in json format
+ */
+std::string get_sample_json(char* sample_str)
+{
+	int current_side = 0;
+	int humidity = 0;
+	int temperature = 0;
+
+	sscanf(sample_str, "%d %d %d", &current_side, &humidity, &temperature);
+
+	nlohmann::json sample;
+	sample["side"] = current_side;
+	sample["humid"] = humidity;
+	sample["temp"] = temperature;
+
+	return sample.dump();
+}
 
 /**
  * @brief Configure systick to a specific frequency
