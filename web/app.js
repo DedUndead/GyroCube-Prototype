@@ -27,10 +27,10 @@ mongoose.connect(db, { useNewUrlParser: true })
 
 
 // MQTT Config
-const mqtt_client = mqtt.connect('mqtt://127.0.0.1:9999')
+const mqtt_client = mqtt.connect('mqtt://18.198.188.151:21883')
 
 mqtt_client.on('connect', function () {
-    mqtt_client.subscribe('/cubus_testing', function (err) {
+    mqtt_client.subscribe('/gyro/hub', function (err) {
         if (err) {
             console.log("error encountered")
             mqtt_client.reconnect()
@@ -147,7 +147,7 @@ io.on("connection", (socket) => {
 
     // Handle updates from client
     socket.on('update_cube_side', function (data) {
-        mqtt_client.publish("update_from_client", JSON.stringify(data))
+        mqtt_client.publish("/gyro/web", JSON.stringify(data))
         console.log("[+] Side update from client: " + JSON.stringify(data))
     });
 
@@ -165,7 +165,15 @@ io.on("connection", (socket) => {
         
         // Update client and Cube
         io.emit("weather_update", weather_full)
-        mqtt_client.publish("weather_update", JSON.stringify(weather_short))
+        mqtt_client.publish("/gyro/web", JSON.stringify(weather_short))
+    });
+
+    socket.on('notif', async function (data) {
+        console.log("[+] Notify cube...")
+        let notification = {
+            notif: 1
+        }
+        mqtt_client.publish("/gyro/web", JSON.stringify(notification))
     });
 
 });

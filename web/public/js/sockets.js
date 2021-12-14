@@ -50,8 +50,8 @@ function update_mqtt(side_index, function_index, function_settings){
 function map_color(side, color) {
     let block = {
         side: side,
-        func: 0,
-        color: color,
+        func: 1,
+        color: parseInt(color.substring(1), 16),
         target: 0
     }
     socket.emit("update_cube_side", block)
@@ -61,8 +61,8 @@ function map_color(side, color) {
 function map_weather(side, city) {
     let block = {
         side: side,
-        func: 1,
-        color: '#000000',
+        func: 4,
+        color: 0,
         target: 0
     }
     socket.emit("update_cube_side", block)
@@ -73,8 +73,8 @@ function map_weather(side, city) {
 function map_humidity(side, target_humidity) {
     let block = {
         side: side,
-        func: 2,
-        color: '#000000',
+        func: 3,
+        color: 0,
         target: target_humidity
     }
     socket.emit("update_cube_side", block)
@@ -84,8 +84,8 @@ function map_humidity(side, target_humidity) {
 function map_temperature(side, target_temperature) {
     let block = {
         side: side,
-        func: 3,
-        color: '#000000',
+        func: 2,
+        color: 0,
         target: target_temperature
     }
     socket.emit("update_cube_side", block)
@@ -95,8 +95,8 @@ function map_temperature(side, target_temperature) {
 function map_idle(side) {
     let block = {
         side: side,
-        func: 5,
-        color: '#000000',
+        func: 0,
+        color: 0,
         target: 0 
     }
     socket.emit("update_cube_side", block)
@@ -109,20 +109,20 @@ function map_notify(side, type, color) {
     if (type == 2 || type == 1) {
         block = {
             side: side,
-            func: 4,
-            color: color,
+            func: 5,
+            color: parseInt(color.substring(1), 16),
             target: type
         }
     }
     else {
         block = {
             side: side,
-            func: 4,
-            color: '#000000',
+            func: 5,
+            color: 0,
             target: type
         }
     }
-    socket.emit("update_cube_side", block)
+    socket.emit("notif", block)
     console.log('[MQTT] Publishing: ' + JSON.stringify(block))
 }
 

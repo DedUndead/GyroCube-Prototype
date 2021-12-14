@@ -105,6 +105,6 @@ function mqtt_timeout(){
 // Helper functions
 function get_side_by_id(element_id) {
     let element = document.getElementById(element_id);
-    let side = element.options[element.selectedIndex].value;
-    return + side
+    let side = + element.options[element.selectedIndex].value;
+    return side - 1
 }
