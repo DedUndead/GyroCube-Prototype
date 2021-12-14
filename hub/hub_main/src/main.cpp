@@ -28,6 +28,9 @@
 #define MQTT_YIELD_TIME      100
 #define ZIGBEE_BUFFER_LENGTH 100
 
+#define MIN_TEMP             10
+#define MAX_SIDE             5
+
 static volatile std::atomic_int delay(0);
 static volatile uint32_t systicks(0);
 static std::string mqtt_message("");
@@ -68,16 +71,11 @@ int main(void) {
     mqtt_status = mqtt.connect(NETWORK_SSID, NETWORK_PASS, MQTT_IP, MQTT_PORT);
     mqtt_status = mqtt.subscribe(MQTT_TOPIC_RECEIVE);
 
-	LpcPinMap none = {-1, -1}; // unused pin has negative values in it
-	LpcPinMap tx = { 0, 18 }; // transmit pin that goes to debugger's UART->USB converter
-	LpcPinMap rx = { 0, 13 }; // receive pin that goes to debugger's UART->USB converter
-	LpcUartConfig cfgdbg = { LPC_USART0, 115200, UART_CFG_DATALEN_8 | UART_CFG_PARITY_NONE | UART_CFG_STOPLEN_1, false, tx, rx, none, none };
-	LpcUart uart(cfgdbg);
-
     /* Serial communication with zigbee module */
 	LpcPinMap txpin = { 0, 0 };
 	LpcPinMap rxpin = { 1, 3 };
-	LpcPinMap cts =   { 0, 9 };
+	LpcPinMap cts   = { 0, 9 };
+	LpcPinMap none  = { -1, - 1 };
 	LpcUartConfig cfg = {
 			LPC_USART1, 9600,
 			UART_CFG_DATALEN_8 | UART_CFG_PARITY_NONE | UART_CFG_STOPLEN_1,
@@ -91,28 +89,25 @@ int main(void) {
 	while (true) {
 		// Bridge the message from web to cube
 		if (mqtt_message_arrived) {
-			uart.write(mqtt_message + "\r\n");
 			// Setting package simplification
 			if (mqtt_message.find("side") != std::string::npos) {
 				std::string to_cube = get_settings_notification();
-				uart.write(to_cube + "\r\n"); //DEBUG
 				zigbee.write(to_cube);
 
-				delay_systick(10);
+				delay_systick(10); // Keep messages synced
 			}
 			// Notification package simplification
 			else if (mqtt_message.find("notif") != std::string::npos) {
 				zigbee.write("n");
 
-				delay_systick(10);
+				delay_systick(10); // Keep messages synced
 			}
 			// Weather package simplification
 			else if (mqtt_message.find("weather") != std::string::npos) {
 				std::string to_cube = get_weather_notification();
-				uart.write(to_cube + "\r\n"); //DEBUG
 				zigbee.write(to_cube);
 
-				delay_systick(10);
+				delay_systick(10); // Keep messages synced
 			}
 
 			mqtt_message_arrived = false;
@@ -124,8 +119,6 @@ int main(void) {
 			zigbee_buffer[receive] = '\0';
 
 			std::string to_web = get_sample_json(zigbee_buffer);
-			uart.write(zigbee_buffer); // DEBUG
-			uart.write("\r\n");
 			mqtt.publish(MQTT_TOPIC_SEND, to_web, to_web.length());
 		}
 
@@ -134,9 +127,7 @@ int main(void) {
 
 		// Reconnect to mqtt
 		while (mqtt_status != 0) {
-			uart.write("Connection lost\r\n");
-		    mqtt_status = mqtt.connect(NETWORK_SSID, NETWORK_PASS, MQTT_IP, MQTT_PORT);
-		    mqtt_status = mqtt.subscribe(MQTT_TOPIC_RECEIVE);
+			ERROR_CONDITION();
 		}
 	}
 
@@ -147,23 +138,31 @@ int main(void) {
 
 /**
  * @brief Construct message to cube containing settings update
+ * @return String containing settings notification
  */
 std::string get_settings_notification()
 {
+	// Simplify JSON into the correct format
 	nlohmann::json settings = nlohmann::json::parse(mqtt_message);
 	uint8_t  side     = settings.value("side", 0);
 	uint8_t  function = settings.value("func", 0);
 	uint32_t color    = settings.value("color", 0);
 	int      target   = settings.value("target", 0);
 
-	return "s" + std::to_string(side)      + " " +
-			     std::to_string(function)  + " " +
-				 std::to_string(color)     + " " +
-				 std::to_string(target);
+	// Check if we need to add leading zero to target value
+	std::string target_str("");
+	if (target < 10) target_str += "0" + std::to_string(target);
+	else             target_str += std::to_string(target);
+
+	return "s" + std::to_string(side)      + "f" +
+				 std::to_string(function)  + "c" +
+				 std::to_string(color)     + "t" +
+				 target_str;
 }
 
 /**
  * @brief Construct message to cube containing weather update
+ * @return String containing weather notification
  */
 std::string get_weather_notification()
 {
@@ -180,11 +179,17 @@ std::string get_weather_notification()
  */
 std::string get_sample_json(char* sample_str)
 {
-	int current_side = 0;
-	int humidity = 0;
-	int temperature = 0;
+	int current_side;
+	int humidity;
+	int temperature;
 
-	sscanf(sample_str, "%d %d %d", &current_side, &humidity, &temperature);
+	// Place error value if interference occured
+	if (sscanf(sample_str, "s%dh%dt%d", &current_side, &humidity, &temperature) != 3 ||
+		temperature < MIN_TEMP || current_side > MAX_SIDE) {
+		current_side = -1;
+		humidity = -1;
+		temperature = -1;
+	}
 
 	nlohmann::json sample;
 	sample["side"] = current_side;
