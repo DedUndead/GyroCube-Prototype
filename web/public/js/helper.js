@@ -9,6 +9,28 @@ var mqtt_timer
 var mqtt_duration = 10000
 var mqtt_oneshot = true
 
+let function_map = {
+    0: 'idler',
+    1: 'lamp',
+    2: 'thermometer',
+    3: 'humidboi',
+    4: 'forecast',
+    5: 'notifier'    
+}
+
+let function_map
+
+function parse_cube_update(data) {
+    let parsed = {
+        side: data.side + 1,
+        func: function_map[data.side],
+        temp: data.temp,
+        humi: data.humid,
+        colr: 'tba',
+    }
+    return parsed
+}
+
 // PROLLY NO ERROR HANDLING
 /**
  * @function error_popup
@@ -53,6 +75,16 @@ function error_popup(code){
  * @return no return
  **/
 function success_popup(){
+
+    function_map = {
+        0: 'idler',
+        1: 'lamp',
+        2: 'thermometer',
+        3: 'humidboi',
+        4: 'forecast',
+        5: 'notifier'      
+    }
+
     let popup_container
     let popup
 

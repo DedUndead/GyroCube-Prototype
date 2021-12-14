@@ -3,7 +3,6 @@ const socket = io("localhost:3000");
 
 // I don't think there will be updates from hub
 socket.on("update_from_cubus", (data) => {
-
     // Handle mqtt timeout
     if(mqtt_oneshot == true){
         console.log("[*] calling success popup")
@@ -11,13 +10,14 @@ socket.on("update_from_cubus", (data) => {
         success_popup()
     }
 
-    // {
-    //     side: current_side
-    //     temp: temperature
-    //     humid: humid
-    // }
-    // UPDATE UI
+    let parsed = parse_cube_update(data)
+    console.log('[+] DATA: ' + JSON.stringify(parsed))
 
+    document.getElementById('cube_side').innerText = 'Current side: ' + parsed.side
+    document.getElementById('current_func').innerText = 'Active function: ' + parsed.func
+    document.getElementById('current_tmp').innerText = 'Temperature: ' + parsed.temp
+    document.getElementById('current_humidity').innerText = 'Humidity: ' + parsed.humi
+    document.getElementById('current_color').innerText = 'Color: ' + 'tba';
 
     // Refresh mqtt timeout
     mqtt_timeout()
@@ -46,7 +46,7 @@ function update_mqtt(side_index, function_index, function_settings){
 	socket.emit("update_cube_side", cube_state_update)
 }
 
-// FUNCTIONS TO MAP ON CUBE
+// Mapping functions and updates
 function map_color(side, color) {
     let block = {
         side: side,
@@ -122,27 +122,14 @@ function map_notify(side, type, color) {
             target: type
         }
     }
-    socket.emit("notif", block)
+    socket.emit("update_cube_side", block)
     console.log('[MQTT] Publishing: ' + JSON.stringify(block))
 }
 
+function ping() {
+    socket.emit("notif", null)
+}
 
-
-// Leaving updates for db alone for now
-/**
- * @function update_userdb
- * @description Emits user action data to be updated in the db to the server
- * @param {String} type_ String specifying action type
- * @param {String} desc_ String specifying action description
- * @param {Integer} val_ New value of the updated element
- * @return no return
- **/
-// function update_userdb(type_, desc_, val_){
-// 	let user_data = {
-// 		type: type_,
-// 		description: desc_,
-// 		value: val_
-// 	};
-// 	socket.emit("update_userdb", user_data);
-// }
-
+function update_weather() {
+    socket.emit("update_weather", null)
+}

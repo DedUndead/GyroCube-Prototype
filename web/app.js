@@ -45,7 +45,9 @@ mqtt_client.on('connect', function () {
 mqtt_client.on('message', async function (topic, message) {
     let input = JSON.parse(message)
     console.log("Received: " + JSON.stringify(input))
-    // io.emit("stats", input);
+    if  (input.side != -1) {
+        io.emit("update_from_cubus", input);
+    }
 });
 
 // Curr date in api format
@@ -151,6 +153,20 @@ io.on("connection", (socket) => {
         console.log("[+] Side update from client: " + JSON.stringify(data))
     });
 
+    // Dictionary for mapping weather to codes
+    let weather_dict = {
+        "sn":   0,
+        "sl":   1,
+        "h":    2,
+        "t":    3,
+        "hr":   4,
+        "lr":   5,
+        "s":    6,
+        "hc":   7,
+        "lc":   8,
+        "c":    9,
+    }
+
     // Handle updates from client
     socket.on('update_weather', async function (data) {
         console.log("[+] Updating Cube and Client...")
@@ -159,10 +175,10 @@ io.on("connection", (socket) => {
         let weather_data = await get_current_weather_state('helsinki')
         let weather_full = weather_data[0]
         let weather_short = {
-            weather: weather_data[1]
+            weather: weather_dict[weather_data[1]]
         }
         console.log('[+] weather: ' + weather_full + ' weather_short: ' + weather_short.weather)
-        
+        console.log('[+] Weather updated from client ' + JSON.stringify(weather_short))
         // Update client and Cube
         io.emit("weather_update", weather_full)
         mqtt_client.publish("/gyro/web", JSON.stringify(weather_short))
@@ -173,6 +189,7 @@ io.on("connection", (socket) => {
         let notification = {
             notif: 1
         }
+        console.log('[+] Notif sent from ' + JSON.stringify(notification))
         mqtt_client.publish("/gyro/web", JSON.stringify(notification))
     });
 
