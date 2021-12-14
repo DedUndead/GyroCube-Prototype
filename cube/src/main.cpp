@@ -58,7 +58,7 @@ bool irq_timer(repeating_timer *rt)
     }
 
     // Set flag measurements ready
-    if (tick_counter % 5 == 0) {
+    if (tick_counter % SAMPLING_RATE == 0) {
         zigbee_send = true;
         tick_counter = 0;
     }
