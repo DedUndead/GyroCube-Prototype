@@ -66,6 +66,8 @@ bool irq_timer(repeating_timer *rt)
     return true;
 }
 
+NeoPixel leds(pio0, NEOPIXEL_PIN, NEOPIXEL_LEN);
+
 /* Main program body */
 int main()
 {
@@ -75,7 +77,6 @@ int main()
     /* Initialize periherals and interfaces */
     I2C i2c(i2c0, BAUDRATE, SDA_PIN, SCL_PIN);
     Hih6020 hih6020(&i2c);
-    NeoPixel leds(pio0, NEOPIXEL_PIN, NEOPIXEL_LEN);
     Accelerometer accelerometer(&i2c);
     VibrationMotor motor(MOTOR_PIN);
 
@@ -112,7 +113,7 @@ int main()
         // State machine tick
         if (tick) {
             gyrocube.handle_state(Event(Event::eTick));
-            
+
             tick = false;
         }
 
@@ -130,13 +131,12 @@ int main()
                 gyrocube.handle_state(Event(Event::eNotify));
             }
             // Weather update arrived
-            // Doesn't work in curent implementation
             else if (zigbee_buffer[0] == 'w') {
                 update_weather(gyrocube, zigbee_buffer);
             }
             // Settings update arrived
-            // Doesn't work in current implementation
             else if (zigbee_buffer[0] == 's') {
+                zigbee.send_data(zigbee_buffer);
                 update_settings(gyrocube, zigbee_buffer);
             }
 
@@ -181,17 +181,17 @@ void handle_accelerometer_sample(Gyrocube& gyrocube, uint8_t* buffer, uint8_t& c
  */
 void update_settings(Gyrocube& gyrocube, char* zigbee_buffer)
 {
-    side_settings new_settings = { 0, 0, 0 };
-    uint8_t side_to_update = 0;
+    side_settings new_settings;
+    int side;
 
     if (sscanf(
-        zigbee_buffer, "s%u %u %u %d", 
-        &side_to_update,
-        &new_settings.function, 
-        &new_settings.color, 
-        &new_settings.target
+        zigbee_buffer, "s%1uf%uc%ut%2d", 
+        &side,
+        &(new_settings.function), 
+        &(new_settings.color), 
+        &(new_settings.target)
     ) == 4) {
-        gyrocube.update_settings(side_to_update, new_settings);
+        gyrocube.update_settings(side, new_settings);
     }
 }
 
@@ -202,9 +202,9 @@ void update_settings(Gyrocube& gyrocube, char* zigbee_buffer)
  */
 void update_weather(Gyrocube& gyrocube, char* zigbee_buffer)
 {
-    uint8_t new_weather_index;
+    int new_weather_index;
 
-    sscanf(zigbee_buffer, "w%d", &new_weather_index);
+    sscanf(zigbee_buffer, "w%1u", &new_weather_index);
 
     gyrocube.update_weather(new_weather_index);
 }

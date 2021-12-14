@@ -4,6 +4,8 @@
 #include "pico/stdlib.h"
 #include "actuator/VibrationMotor.h"
 
+#define TIMEOUT 3
+
 class XBee {
     public:
         XBee(uart_inst_t *uart, uint8_t rxpin, uint8_t txpin, uint8_t ctspin, uint8_t wokepin, uint8_t statuspin);

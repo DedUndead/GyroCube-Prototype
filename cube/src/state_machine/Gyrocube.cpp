@@ -166,6 +166,7 @@ void Gyrocube::state_idle(const Event& e)
     switch (e.type) {
         case Event::eEnter:
             clear();
+            leds->fill(0);
 
             break;
         case Event::eTick:
@@ -343,11 +344,6 @@ void Gyrocube::state_weather(const Event& e)
                 update_required = false;
             }
 
-            // DEBUGGING
-            if (weather_color_index < N_WEATHER_COLORS) weather_color_index++;
-            else weather_color_index = 0;
-            update_weather(weather_color_index);
-
             break;
         case Event::eReconnect:
             set_state(&Gyrocube::startup);
@@ -375,6 +371,7 @@ void Gyrocube::state_notification(const Event& e)
 {
     switch (e.type) {
         case Event::eEnter:
+            leds->fill(0);
             clear();
 
             break;
