@@ -20,8 +20,8 @@ I2C::I2C(i2c_inst_t* i2c_, const uint& baudrate, const uint& sda_pin, const uint
     gpio_set_function(scl_pin, GPIO_FUNC_I2C);
 
     // Enable pullup
-    gpio_pull_up(sda_pin);
-    gpio_pull_up(scl_pin); 
+    //gpio_pull_up(sda_pin);
+    //gpio_pull_up(scl_pin); 
 }
 
 /* @brief Read data from specified slave's register
@@ -34,7 +34,8 @@ I2C::I2C(i2c_inst_t* i2c_, const uint& baudrate, const uint& sda_pin, const uint
 int I2C::read(uint8_t slave_addr, uint8_t reg_addr, uint8_t* buffer, size_t size)
 {
     // Establish connection with slave, keep connection opened
-    if (i2c_write_blocking(i2c, slave_addr, &reg_addr, 1, true) != 1) {
+    if (i2c_write_blocking(i2c, slave_addr, &reg_addr, 1, true) == PICO_ERROR_GENERIC) {
+        printf("I2C Internal error.\n");
         return -1;
     }
 
@@ -53,12 +54,12 @@ int I2C::read(uint8_t slave_addr, uint8_t* buffer, size_t size)
     return i2c_read_blocking(i2c, slave_addr, buffer, size, false);
 }
 
-/* @brief Write data to specified slave's register
+/* @brief Write data to specified slave's 8-bit address register
  * @param slave_addr Slave address
  * @param reg_addr   Register address
  * @param buffer     Buffer to write from
  * @param size       Size of buffer
- * @return           Number of bytes read, negative on error
+ * @return           Number of bytes written, negative on error
  */
 int I2C::write(uint8_t slave_addr, uint8_t reg_addr, uint8_t* buffer, size_t size)
 {

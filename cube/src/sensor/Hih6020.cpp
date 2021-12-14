@@ -9,12 +9,15 @@ Hih6020::Hih6020(I2C* i2c_, uint address_) :
 
 /**
  * @brief Read humidity from the sensor
- * @return Error code on error, reading on success 
+ * @param fetch Fetch data from the sensor or use previous reading
+ * @return      Error code on error, reading on success 
  */
-int Hih6020::read_humidity()
+int Hih6020::read_humidity(bool fetch)
 {
     // Check if data can be obtained
-    if (!fetch_data()) return ERROR_STATUS;
+    if (fetch) {
+        if (!fetch_data()) return HIH_ERROR_STATUS;
+    }
 
     // According to honeywell data organization
     uint16_t raw_reading = ((data[0] & MASK_STATUS) << 8) | data[1];
@@ -24,12 +27,15 @@ int Hih6020::read_humidity()
 
 /**
  * @brief Read temperature from the sensor
- * @return Error code on error, reading on success  
+ * @param fetch Fetch data from the sensor or use previous reading
+ * @return      Error code on error, reading on success  
  */
-int Hih6020::read_temperature()
+int Hih6020::read_temperature(bool fetch)
 {
     // Check if data can be obtained and update data buffer
-    if (!fetch_data()) return ERROR_STATUS;
+    if (fetch) {
+        if (!fetch_data()) return HIH_ERROR_STATUS;
+    }
 
     // According to honeywell data organization
     uint16_t raw_reading = (data[2] << 6) | (data[3] >> 2);
