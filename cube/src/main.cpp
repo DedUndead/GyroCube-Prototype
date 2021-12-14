@@ -223,7 +223,7 @@ void forward_measurements(Gyrocube& gyrocube, uint8_t side, XBee& zigbee)
     measurements = gyrocube.get_info();
 
     sprintf(
-        message, "%d %d %d", 
+        message, "s%dh%dt%d", 
         side, 
         measurements.humidity, 
         measurements.temperature
