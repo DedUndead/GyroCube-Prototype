@@ -344,11 +344,6 @@ void Gyrocube::state_weather(const Event& e)
                 update_required = false;
             }
 
-            // DEBUGGING
-            if (weather_color_index < N_WEATHER_COLORS) weather_color_index++;
-            else weather_color_index = 0;
-            update_weather(weather_color_index);
-
             break;
         case Event::eReconnect:
             set_state(&Gyrocube::startup);

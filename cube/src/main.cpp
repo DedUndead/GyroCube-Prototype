@@ -202,9 +202,9 @@ void update_settings(Gyrocube& gyrocube, char* zigbee_buffer)
  */
 void update_weather(Gyrocube& gyrocube, char* zigbee_buffer)
 {
-    uint8_t new_weather_index;
+    int new_weather_index;
 
-    sscanf(zigbee_buffer, "w%d", &new_weather_index);
+    sscanf(zigbee_buffer, "w%1u", &new_weather_index);
 
     gyrocube.update_weather(new_weather_index);
 }

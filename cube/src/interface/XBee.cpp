@@ -63,7 +63,7 @@ int XBee::get_data(uint8_t* buffer, size_t len)
     
     while (num < len) {
         while (!uart_is_readable(uart)) {
-            if (timer == 2) return num;
+            if (timer == TIMEOUT) return num;
             timer++;
             sleep_ms(1);
         }
