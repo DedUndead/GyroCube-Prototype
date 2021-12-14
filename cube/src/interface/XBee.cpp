@@ -59,9 +59,17 @@ void XBee::send_data(char c)
 int XBee::get_data(uint8_t* buffer, size_t len)
 {
     int num = 0;
-
-    while (uart_is_readable(uart) && num < len) {
+    int timer = 0;
+    
+    while (num < len) {
+        while (!uart_is_readable(uart)) {
+            if (timer == 2) return num;
+            timer++;
+            sleep_ms(1);
+        }
         buffer[num] = uart_getc(uart);
+
+        timer = 0;
         num++;
     }
     buffer[num] = '\0';

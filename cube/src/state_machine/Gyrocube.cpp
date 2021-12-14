@@ -166,6 +166,7 @@ void Gyrocube::state_idle(const Event& e)
     switch (e.type) {
         case Event::eEnter:
             clear();
+            leds->fill(0);
 
             break;
         case Event::eTick:
@@ -375,6 +376,7 @@ void Gyrocube::state_notification(const Event& e)
 {
     switch (e.type) {
         case Event::eEnter:
+            leds->fill(0);
             clear();
 
             break;
