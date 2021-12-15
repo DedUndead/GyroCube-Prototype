@@ -1,7 +1,7 @@
 // Initiate websockets
 const socket = io("localhost:3000");
 
-// I don't think there will be updates from hub
+// Update cube info on the interface
 socket.on("update_from_cubus", (data) => {
     // Handle mqtt timeout
     if(mqtt_oneshot == true){
@@ -23,8 +23,10 @@ socket.on("update_from_cubus", (data) => {
     mqtt_timeout()
 });
 
+// Update weather on the interface
 socket.on("weather_update", (data) => {
     console.log("[+] Weather update: " + data)
+    document.getElementById('current_weather').innerText = 'Current_weather: ' + data
 });
 
 /**
@@ -46,7 +48,13 @@ function update_mqtt(side_index, function_index, function_settings){
 	socket.emit("update_cube_side", cube_state_update)
 }
 
-// Mapping functions and updates
+/**
+ * @function map_color
+ * @param side Side to which map the function
+ * @param color Color of the LEDs
+ * @description Create a mapping object and pass it to the webserver via websocket
+ * @return no return
+ **/
 function map_color(side, color) {
     let block = {
         side: side,
@@ -58,6 +66,13 @@ function map_color(side, color) {
     console.log('[MQTT] Publishing: ' + JSON.stringify(block))
 }
 
+/**
+ * @function map_weather
+ * @param side Side to which map the function
+ * @param city City for which the weather status will be fethed
+ * @description Create a mapping object and pass it to the webserver via websocket
+ * @return no return
+ **/
 function map_weather(side, city) {
     let block = {
         side: side,
@@ -70,6 +85,13 @@ function map_weather(side, city) {
     console.log('[MQTT] Publishing: ' + JSON.stringify(block))
 }
 
+/**
+ * @function map_humidity
+ * @param side Side to which map the function
+ * @param target_humidity Target humidity which controls the color of the cube
+ * @description Create a mapping object and pass it to the webserver via websocket
+ * @return no return
+ **/
 function map_humidity(side, target_humidity) {
     let block = {
         side: side,
@@ -81,6 +103,13 @@ function map_humidity(side, target_humidity) {
     console.log('[MQTT] Publishing: ' + JSON.stringify(block))
 }
 
+/**
+ * @function map_temperature
+ * @param side Side to which map the function
+ * @param target_temperature Target temperature which controls the color of the cube
+ * @description Create a mapping object and pass it to the webserver via websocket
+ * @return no return
+ **/
 function map_temperature(side, target_temperature) {
     let block = {
         side: side,
@@ -92,6 +121,12 @@ function map_temperature(side, target_temperature) {
     console.log('[MQTT] Publishing: ' + JSON.stringify(block))
 }
 
+/**
+ * @function map_idle
+ * @param side Side to which map the function
+ * @description Create a mapping object and pass it to the webserver via websocket
+ * @return no return
+ **/
 function map_idle(side) {
     let block = {
         side: side,
@@ -103,6 +138,14 @@ function map_idle(side) {
     console.log('[MQTT] Publishing: ' + JSON.stringify(block))
 }
 
+/**
+ * @function map_notify
+ * @param side Side to which map the function
+ * @param type Type of notification: 0 -> vibrate, 1 -> color, 2 -> vibrate and color
+ * @param color Color of the cube
+ * @description Create a mapping object and pass it to the webserver via websocket
+ * @return no return
+ **/
 function map_notify(side, type, color) {
     let block
 
@@ -126,10 +169,20 @@ function map_notify(side, type, color) {
     console.log('[MQTT] Publishing: ' + JSON.stringify(block))
 }
 
+/**
+ * @function ping
+ * @description Create a notification event which gets emitted to the webserver.
+ * @return no return
+ **/
 function ping() {
     socket.emit("notif", null)
 }
 
+/**
+ * @function update_weather
+ * @description Create a weather update event which gets emitted to the webserver.
+ * @return no return
+ **/
 function update_weather() {
     socket.emit("update_weather", null)
 }

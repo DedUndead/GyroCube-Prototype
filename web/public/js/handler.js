@@ -67,6 +67,7 @@ document.getElementById("idle_submit").addEventListener("click", (event) => {
 
 });
 
+// Activate ping button
 let pinger = document.getElementById("pingpong")
 pinger.style="cursor: pointer;"
 pinger.addEventListener("click", (event) => {
