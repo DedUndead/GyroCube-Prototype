@@ -11,8 +11,11 @@ var mqtt_oneshot = true
 var weather_timer
 var weather_interval = 10 * 60000   // 10 min interval
 
+// Default weather location
+var weather_location = 'helsinki'
+
 // Default mapping of functions to sides
-let function_map = {
+var function_map = {
     0: 'idler',
     1: 'lamp',
     2: 'thermometer',
@@ -41,9 +44,10 @@ function parse_cube_update(data) {
 /**
  * @function error_popup
  * @description Creates a red popup when displaying an error message or mqtt inactivity
+ * @param code 0 -> mqtt inactivity, 1 -> weather error
  * @return no return
  **/
-function error_popup(){
+function error_popup(code){
     let popup_container
     let popup
 
@@ -68,10 +72,22 @@ function error_popup(){
         popup_container = document.getElementById("popup_container") 
     }
 
-    // Set general class styling
-    popup_container.className = "flex flex-row justify-center bg-red-100 absolute inset-x-0 top-0"
-    popup.innerHTML = "No mqtt data for a while now :("
-    
+    if (code == 0){
+        // Set mqtt error styling
+        popup_container.className = "flex flex-row justify-center bg-red-100 absolute inset-x-0 top-0"
+        popup.innerHTML = "No mqtt data for a while now :("
+    }
+    else if (code == 1){
+        // Set mqtt error styling
+        popup_container.className = "flex flex-row justify-center bg-red-100 absolute inset-x-0 top-0"
+        popup.innerHTML = "Location not found :("
+        
+        // Start popup timer
+        popup_timer = setTimeout(function () {
+            document.getElementById("popup").remove()
+            document.getElementById("popup_container").remove()
+        }, popup_duration);
+    }
 }
 
 /**
@@ -143,7 +159,7 @@ function mqtt_timeout(){
 
     mqtt_timer = setTimeout(function () {
         mqtt_oneshot = true
-        error_popup()
+        error_popup(0)
     }, mqtt_duration)
 }
 

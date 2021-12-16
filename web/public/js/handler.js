@@ -67,6 +67,18 @@ document.getElementById("idle_submit").addEventListener("click", (event) => {
 
 });
 
+document.getElementById("submit_location").addEventListener("click", (event) => {
+   
+    // Get value from field and reset it afterwards
+    let loc_input_element = document.getElementById("location_input")
+    weather_location = loc_input_element.value
+    loc_input_element.value = null
+
+    // Update weather
+    console.log('[+] Updated weather location: ' + weather_location)
+    update_weather()
+});
+
 // Activate ping button
 let pinger = document.getElementById("pingpong")
 pinger.style="cursor: pointer;"

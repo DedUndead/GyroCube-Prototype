@@ -25,6 +25,9 @@ socket.on("update_from_cubus", (data) => {
 
 // Update weather on the interface
 socket.on("weather_update", (data) => {
+    if (data == 'err') {
+        error_popup(1);
+    }
     console.log("[+] Weather update: " + data)
     document.getElementById('current_weather').innerText = 'Current_weather: ' + data
 });
@@ -73,7 +76,7 @@ function map_color(side, color) {
  * @description Create a mapping object and pass it to the webserver via websocket
  * @return no return
  **/
-function map_weather(side, city) {
+function map_weather(side) {
     let block = {
         side: side,
         func: 4,
@@ -81,7 +84,7 @@ function map_weather(side, city) {
         target: 0
     }
     socket.emit("update_cube_side", block)
-    socket.emit("update_weather", null)
+    socket.emit("update_weather", weather_location)
     console.log('[MQTT] Publishing: ' + JSON.stringify(block))
 }
 
@@ -184,5 +187,5 @@ function ping() {
  * @return no return
  **/
 function update_weather() {
-    socket.emit("update_weather", null)
+    socket.emit("update_weather", weather_location)
 }

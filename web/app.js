@@ -25,7 +25,6 @@ mongoose.connect(db, { useNewUrlParser: true })
     .then(() => console.log("MongoDB connected"))
     .catch(err => console.log(err));
 
-
 // MQTT Config
 const mqtt_client = mqtt.connect('mqtt://18.198.188.151:21883')
 
@@ -181,9 +180,14 @@ let weather_dict = {
  * @return Current state of weather and the abbreviation code of the weather
  **/
  async function get_current_weather_state(city) {
+    // Get woeid and handle error
     let woeid = await get_woeid(city)
-    let [weather_state, weather_state_abbr] = await parse_weather_state(woeid)
+    if (woeid == 'nil'){
+        return ['err', 'err']
+    }
 
+    // If data is correct, parse it
+    let [weather_state, weather_state_abbr] = await parse_weather_state(woeid)
     return [weather_state, weather_state_abbr]
 }
 
@@ -202,23 +206,29 @@ io.on("connection", (socket) => {
         console.log("[+] Updating Cube and Client...")
 
         // Get data from API
-        let weather_data = await get_current_weather_state('helsinki')
+        let weather_data = await get_current_weather_state(data)
 
-        // Save data used in the web ui
-        let weather_full = weather_data[0]
-
-        // Map the weather abbreviation 
-        let weather_short = {
-            weather: weather_dict[weather_data[1]]
+        if (weather_data[0] == 'err') {
+            console.log("[+] Ignoring invalid input...")
+            io.emit("weather_update", 'err')
         }
+        else {
+            // Save data used in the web ui
+            let weather_full = weather_data[0]
 
-        // Debug output
-        console.log('[+] weather: ' + weather_full + ' weather_short: ' + weather_short.weather)
-        console.log('[+] Weather updated from client ' + JSON.stringify(weather_short))
-        
-        // Update client and Cube
-        io.emit("weather_update", weather_full)
-        mqtt_client.publish("/gyro/web", JSON.stringify(weather_short))
+            // Map the weather abbreviation 
+            let weather_short = {
+                weather: weather_dict[weather_data[1]]
+            }
+
+            // Debug output
+            console.log('[+] weather: ' + weather_full + ' weather_short: ' + weather_short.weather)
+            console.log('[+] Weather updated from client ' + JSON.stringify(weather_short))
+            
+            // Update client and Cube
+            io.emit("weather_update", weather_full)
+            mqtt_client.publish("/gyro/web", JSON.stringify(weather_short))
+        }
     });
 
     socket.on('notif', async function (data) {
