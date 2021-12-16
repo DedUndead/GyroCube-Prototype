@@ -53,7 +53,7 @@ document.getElementById("weather_submit").addEventListener("click", (event) => {
     console.log('[+] side: ' + side)
     
     function_map[side] = 'forecast'
-    map_weather(side , weather_location)
+    map_weather(side)
 
 });
 
