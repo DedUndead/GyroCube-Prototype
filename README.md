@@ -39,11 +39,12 @@ Picture of the project.
 
 #### Overall architecture
 
-Detailed information on hub's hardware/software architecture can be found here:
-Detailed information on cube's hardware/software architecture can be found here:
-Detailed information on web's architecture can be found here:
+Detailed information on hub's hardware/software architecture can be found here:<br>
+Detailed information on cube's hardware/software architecture can be found here:<br>
+Detailed information on web's architecture can be found here:<br>
 
 The links above provide additional information about technologies used, jastification for components choices and user mannuals.
+Data formats for communications are also described there.
 
 <p align="center"><img src="https://i.imgur.com/AKczasR.png" alt="alternatetext"></p>
 <p align="center">Figure 3. Overall project architecture</p>
