@@ -7,7 +7,7 @@ Detailed information on web's architecture can be found here:<br>
 #### Developers and contributors:
 <b>Pavel Arefyev</b>: Cube's HW/SW architecture, Hub's HW/SW architecture, Zigbee topology <br>
 <b>Joel Kontas</b>: Cube's HW/SW architecture, Zigbee topology<br>
-<b>Daniel Liberman</b>: Cube's architecture, Web<br>
+<b>Daniel Liberman</b>: Cube's HW/SW architecture, Web<br>
 <b>Alex Franko</b>: Web<br>
 
 # Concept
