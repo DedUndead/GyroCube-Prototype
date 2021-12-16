@@ -4,6 +4,12 @@ Detailed information on hub's hardware/software architecture can be found here:<
 Detailed information on cube's hardware/software architecture can be found here:<br>
 Detailed information on web's architecture can be found here:<br>
 
+#### Developers and contributors:
+<b>Pavel Arefyev</b>: Cube's HW/SW architecture, Hub's HW/SW architecture, Zigbee topology <br>
+<b>Joel Kontas</b>: Cube's HW/SW architecture, Zigbee topology<br>
+<b>Daniel Liberman</b>: Cube's chitecture, Web<br>
+<b>Alex Franko</b>: Web<br>
+
 # Concept
 GyroCube is a Smart-Home accessory. The GyroCube is a multipurpose cube that can perform different functions based on the cube placing. 
 Functionality is changed by simply flipping the cube on the table. GyroCube uses vibration modules and LEDs as the output method to notify the user of changes. 
