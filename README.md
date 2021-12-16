@@ -45,7 +45,7 @@ Picture of the project.
 
 The links in the first section provide additional information about technologies used, jastification for components choices and user mannuals.<br>
 
-<p align="center"><img src="https://i.imgur.com/whUNJtT.png" alt="Project acrhitecture diagram"></p>
+<p align="center"><img src="https://i.imgur.com/whUNJtT.png?1" alt="Project acrhitecture diagram"></p>
 <p align="center">Figure 3. Overall project architecture</p>
 
 ### Predefined functionality
