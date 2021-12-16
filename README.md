@@ -14,14 +14,14 @@ The main station acts as a gateway in personal area network, while the cubes are
 This allows the GyroCube environment to be scalable, as the user can connect as many cubes as he wants. 
 The goal is to provide the customer with a delightful looking home accessory, which will also allow them to obtain helpful information in a simple, minimalistic way.
 
-<p align="center"><img src="https://i.imgur.com/4AzbVe5.png" alt="alternatetext"></p>
+<p align="center"><img src="https://i.imgur.com/4AzbVe5.png" alt="Concept overview"></p>
 <p align="center">Figure 1. Concept overview</p>
 
 For instance, sides can be mapped to track the weather, humidity or notifications.
 What's more, functions can be assigned to special gestures, such as shaking or tapping.
 With help of additional platforms, for example "If This, Then That", GyroCube can be extended to integrate into already existing smart home environment.
 
-<p align="center"><img src="https://i.imgur.com/WeUtIFV.png" alt="alternatetext"></p>
+<p align="center"><img src="https://i.imgur.com/WeUtIFV.png" alt="Functionality sketch"></p>
 <p align="center">Figure 2. Cube's functionality example</p>
 
 # Project description
@@ -45,7 +45,7 @@ Picture of the project.
 
 The links in the first section provide additional information about technologies used, jastification for components choices and user mannuals.<br>
 
-<p align="center"><img src="https://i.imgur.com/whUNJtT.png" alt="alternatetext"></p>
+<p align="center"><img src="https://i.imgur.com/whUNJtT.png" alt="Project acrhitecture diagram"></p>
 <p align="center">Figure 3. Overall project architecture</p>
 
 ### Predefined functionality
@@ -73,10 +73,10 @@ The <b>idx</b> denotes index of the function, used in the code.
 ### Side numbering
 
 Web interface and the cube itself utilizes 1-6 numbering when presented to the user.<br>
-However, it is worth mentioning, that in the code and documentation they are indexed starting from 0.<br>
+However, it is worth mentioning, that in the code they are indexed starting from 0.<br>
 For instance, side 3 would have index 2.
 
-
+Picture of the cube with numbers
   
 ### ZigBee PAN information
 
