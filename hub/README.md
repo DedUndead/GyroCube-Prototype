@@ -1,7 +1,7 @@
 # GyroCube: Hub Architecture
 
-The hub is not encapsulated into the case.<br>
-It is an LPC1549 development board with WI-FI shield provided by Metropolia University of Applied Sciences.<br>
+The hub is not encapsulated into a case.<br>
+It is an LPC1549 development board with a WI-FI shield provided by Metropolia University of Applied Sciences.<br>
 RF Module is connected directly to the pin headers of the board.
 
 Picture of a hub
@@ -32,10 +32,10 @@ Table 1. List of components
 
 ##### MCU - LPC1549
 
-LPC1549 is a development board supported by NXP. The hardware libraries and examples allow to quickly prototype the bridge software that the project needed. Variety of peripherals help to achieve the target as well, for instance using RGB LED as an indicator for different errors/events.
+LPC1549 is a development board supported by NXP. The hardware libraries and examples allow to quickly prototype the bridge software that the project needed. A variety of peripherals help to achieve the target as well, for instance using RGB LED as an indicator for different errors/events.
 
 ##### RF Module - XBee 2
-XBee2 modules can be configured to operate with different wireless protocols using XCTU software. Sending/Receiving data and configuration of the device are handled via UART, meaning it doesn't present a difficult programming challenge to establish the communication. ZigBee was chosen to be the target PAN protocol, because of its scalability, self-management and power consumption. Hub is a device that works as a gateway for all devices in PAN. The module on the hub is configured to operate in AT mode, coordinator. 
+XBee2 modules can be configured to operate with different wireless protocols using XCTU software. Sending/Receiving data and configuration of the device are handled via UART, meaning it doesn't present a difficult programming challenge to establish the communication. ZigBee was chosen to be the target PAN protocol, because of its scalability, self-management and power consumption. Hub is a device that works as a gateway for all devices in a PAN. The module on the hub is configured to operate as a coordinator in AT mode. 
 
 ##### Wi-Fi Module - ESP8266
 ESP8266 shield provided by Metropolia University of Applied Sciences is a handy extension for the board. MQTT protocol is being used to communicate with the web, and the team members have already worked with ESP8266 and MQTT arduino-ported library for this hardware. This is another factor that helped to quickly implement the ideas in the code.
@@ -73,7 +73,7 @@ Notification:
 }
 ```
 
-The hub sends only one type of JSON string, containing the measurements that arrived via ZigBee:
+The hub sends only one type of JSON string, containing the measurements that have arrived via ZigBee:
 ```js
 {
   side: 0-5,           // Current side
@@ -86,9 +86,9 @@ The hub sends only one type of JSON string, containing the measurements that arr
 
 Bridging is the term the project uses to describe reforwarding of the messages from PAN to LAN and vice versa.
 
-Because the cube does not utilize any JSON parsers and implies lighter processing, the idea behind bridging is simplifying JSON strings into string with identifiers, that are described in the general documentaion page.
+Because the cube does not utilize any JSON parsers and implies lighter processing, the idea behind bridging is simplifying JSON strings into strings with identifiers, that are described in the general documentation page.
 
-Examples of bridging:
+Examples of bridging:t
 
 ```
 { side: 1, func: 5, color: 0, target: 2 } --> s1f5c0t2
@@ -99,7 +99,7 @@ s0h20t21 --> { side: 0, humidity: 20, temperature: 21 }
 
 ### Data samples filtering
 
-Because of the strict UART timing and additional interference, some data samples arrive invalid. Therefore, hub performs simple sanity check for a data sample. In case the measurement seems to be invalid, the cube's side value is replaces with -1.<br>
+Because of the strict UART timing and additional interference, some data samples arrive invalid. Therefore, hub performs a simple sanity check for a data sample. In case the measurement seems to be invalid, the cube's side value is replaced with -1.<br>
 
 ```c++
 if (sscanf(sample_str, "s%dh%dt%d", &current_side, &humidity, &temperature) != 3 ||
@@ -110,7 +110,7 @@ if (sscanf(sample_str, "s%dh%dt%d", &current_side, &humidity, &temperature) != 3
 }
 ```
 
-The reason the invalid messages are not dropped, is a potential oppotunity to use it for statistic. For instance, keeping track of interference peaks or calculating data loss percentage.
+The reason the invalid messages are not dropped, is a potential opportunity to use them for statistics. For instance, keeping track of interference peaks or calculating data loss percentage.
 
 # Credit
 
