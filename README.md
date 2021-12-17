@@ -27,7 +27,7 @@ The goal is to provide the customer with a delightful looking home accessory, wh
 
 For instance, sides can be mapped to track the weather, humidity or notifications.
 What's more, functions can be assigned to special gestures, such as shaking or tapping.
-With help of additional platforms, for example "If This, Then That", GyroCube can be extended to integrate into already existing smart home environment.
+With the help of additional platforms, for example "If This, Then That", GyroCube can be extended to integrate into already existing smart home environment.
 
 <p align="center"><img src="https://i.imgur.com/WeUtIFV.png" alt="Functionality sketch"></p>
 <p align="center">Figure 2. Cube's functionality example</p>
@@ -41,7 +41,7 @@ Picture of the project.
 
 ### Features summary
 *	One cube, one hub and web interface
-*	6 configurable side
+*	6 configurable sides
 *	6 predefined functions to choose from
 *	Point-to-Point Zigbee topology
 *	Addressable LEDs and Vibration motor outputs
@@ -51,7 +51,7 @@ Picture of the project.
 
 ### Overall architecture
 
-The links in the first section provide additional information about technologies used, jastification for components choices and user mannuals.<br>
+The links in the first section provide additional information about technologies used, justification for component choices and user manuals.<br>
 
 <p align="center"><img src="https://i.imgur.com/whUNJtT.png?1" alt="Project acrhitecture diagram"></p>
 <p align="center">Figure 3. Overall project architecture</p>
@@ -60,7 +60,7 @@ The links in the first section provide additional information about technologies
 
 As stated in the overview, the prototype provides six functions for mapping. 
 The main idea was to create a challenge of designing configurable and flexible software architecture.
-The presense of 6 configurable functions allowed the team to discover various pitfalls and determine the possible improvements for the future product.
+The presence of 6 configurable functions allowed the team to discover various pitfalls and determine the possible improvements for the future product.
 
 <p align="center">Table 1. Predefined functions description</p>
 <div align="center">
@@ -104,7 +104,7 @@ List of identifiers:
 * w - weather update, value is weather array index* in decimal format (0 - 9)
 * n - notification, value is notification mode index (0 - 2)
 * h - humidity measurement<br>
-\* Weather indexes cab be obtained from web documentation
+\* Weather indexes can be obtained from the web documentation
 
 Examples of messages:<br>
 `s0f3c0t30` to cube - map side 1 to humidity function with target value 30<br>
