@@ -1,7 +1,7 @@
 # GyroCube: Prototype
 
-Detailed information on hub's hardware/software architecture can be found here:<br>
-Detailed information on cube's hardware/software architecture can be found here:<br>
+Detailed information on hub's hardware/software architecture can be found here: <br>
+Detailed information on cube's hardware/software architecture can be found here: [Click](https://github.com/DedUndead/GyroCube-Prototype/blob/readme/cube/README.md)<br>
 Detailed information on web's architecture can be found here:<br>
 
 #### Developers and contributors:
