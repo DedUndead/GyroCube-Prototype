@@ -67,7 +67,7 @@ Weather update:
 ```
 
 Notification:
-```json
+```js
 {
   notif: true
 }
