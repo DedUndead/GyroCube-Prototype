@@ -27,3 +27,17 @@ Table 1. List of components
 | MCU               | LPC1549         | [Link](https://www.nxp.com/docs/en/data-sheet/LPC15XX.pdf)                                        |
 | RF Module         | Xbee 2          | [Link](http://www.farnell.com/datasheets/27606.pdf)                                               |
 | Wi-Fi Module      | ESP8266         | [Link](https://www.espressif.com/sites/default/files/documentation/0a-esp8266ex_datasheet_en.pdf) |
+
+### Justification for components choice
+
+##### MCU - LPC1549
+
+LPC1549 is a development board supported by NXP. The hardware libraries and examples allow to quickly prototype the bridge software that the project needed. Variety of peripherals help to achieve the target as well, for instance using RGB LED as an indicator for different errors/events.
+
+##### RF Module - XBee 2
+XBee2 modules can be configured to operate with different wireless protocols using XCTU software. Sending/Receiving data and configuration of the device are handled via UART, meaning it doesn't present a difficult programming challenge to establish the communication. ZigBee was chosen to be the target PAN protocol, because of its scalability, self-management and power consumption. Hub is a device that works as a gateway for all devices in PAN. The module on the hub is configured to operate in AT mode, coordinator. 
+
+##### Wi-Fi Module - ESP8266
+ESP8266 shield provided by Metropolia University of Applied Sciences is a handy extension for the board. MQTT protocol is being used to communicate with the web, and the team members have already worked with ESP8266 and MQTT arduino-ported library for this hardware. This is another factor that helped to quickly implement the ideas in the code.
+
+# Software architecture
