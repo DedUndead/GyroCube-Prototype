@@ -1,7 +1,5 @@
 # GyroCube: Cube Architecture
 
-Documentation related to Cube device as a part of GyroCube environment.
-
 The prototype resides in a 3d printed open case in a shape of a cube with 2 sides missing.<br>
 The open case design was developed to quickly present the hardware organization and main components during the demo.<br>
 The presense of 4 solid black 4mm-wide plastic walls allows the cube to be stable on each side.<br>
@@ -74,3 +72,4 @@ Simple vibration motor placed on one of the cube sides. 9000 rpm is a speed that
 
 # Software architecture
 
+The software provides an abstraction layers for all the peripherals, state machine for handling function and side changing and main body for issuing events and managing communication.
