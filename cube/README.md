@@ -73,3 +73,21 @@ Simple vibration motor placed on one of the cube sides. 9000 rpm is a speed that
 # Software architecture
 
 The software provides an abstraction layers for all the peripherals, state machine for handling function and side changing and main body for issuing events and managing communication.
+
+<p align="center"><img src="https://i.imgur.com/uRmOFMd.png" alt="Concept overview"></p>
+<p align="center">Figure 3. Software architecture overview </p>
+
+### Main body
+
+Main body performs accelerometer measurements, issues event ticks and polls for ZigBee data periodically.
+
+Table 2. Main body functionality description
+
+| Function                                           | Periodicity              |
+|----------------------------------------------------|--------------------------|
+| Accelerometer measurements (current side tracking) | Sample / 1000ms          |
+| State machine tick                                 | Tick / 500 ms            |
+| Send measurements and current side to hub          | Packet / 1000ms          |
+| Listen to Zigbee data                              | Polling with 10 ms delay |
+
+Periodicity is implemeted using hardware timers.
