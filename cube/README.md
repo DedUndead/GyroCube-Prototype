@@ -140,3 +140,31 @@ case Event::eChange:
 
     break;
 ```
+
+<p align="center"><img src="https://i.imgur.com/tEXbYmk.png" alt="Concept overview"></p>
+<p align="center">Figure 4. State machine UML sketch </p>
+
+State machine can be initialized in a standalone mode, skipping the startup states and requests for reconnection, or in zigbee mode. In latter option, if no acknowledgement is received for a long time, the state machine goes back to startup state, where it smoothly blinks blue until the network is restored.<br>
+<b>Note:</b> In current implementation no acknowledgement is present, therefore the machine is initialized with standalone option.
+
+All the events check if the settings were updated on tick, adjusting the execution or switching to another state:
+```
+case Event::eTick:
+    update_measurements();
+
+    if (function_changed) {
+        function_changed = false;
+        set_state(settings[current_side].function);
+    }
+
+    // Change color if update in settings is present
+    if (update_required) {
+        leds->fill(settings[current_side].color);
+        update_required = false;
+    }
+
+    break;
+```
+On each tick event, state machine makes new humidity/temperature measurements that will be later send to hub.<br>
+On entrance event, all the support flags are being cleared.<br>
+On exit event, actuators are brought back to off state.
