@@ -1,8 +1,10 @@
 # GyroCube: Prototype
 
-Detailed information on hub's hardware/software architecture can be found here: <br>
-Detailed information on cube's hardware/software architecture can be found here: [CLICK](https://github.com/DedUndead/GyroCube-Prototype/blob/readme/cube/README.md)<br>
-Detailed information on web's architecture can be found here:<br>
+Documentation in the root folder overviews the project.
+
+1. Detailed information on cube's hardware/software architecture can be found here: [CLICK](https://github.com/DedUndead/GyroCube-Prototype/blob/readme/cube/README.md)<br>
+2. Detailed information on hub's hardware/software architecture can be found here: <br>
+3. Detailed information on web's architecture can be found here:<br>
 
 Reading the documentation fully allows to understand the architectural decisions and the code better.
 
