@@ -147,7 +147,7 @@ case Event::eChange:
 State machine can be initialized in a standalone mode, skipping the startup states and requests for reconnection, or in zigbee mode. In latter option, if no acknowledgement is received for a long time, the state machine goes back to startup state, where it smoothly blinks blue until the network is restored.<br>
 <b>Note:</b> In current implementation no acknowledgement is present, therefore the machine is initialized with standalone option.
 
-All the events check if the settings were updated on tick, adjusting the execution or switching to another state:
+All the states check on tick if the settings were updated, adjusting the execution or switching to another state:
 ```
 case Event::eTick:
     update_measurements();
