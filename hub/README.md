@@ -53,7 +53,7 @@ Settings update:
 ```
 {
   side: 0-5,          // Target side to update
-  function: 0-5       // Function to map
+  func: 0-5       // Function to map
   color: uint32_t     // Color in decimal format
   target: int         // Target in decimal format
 }
@@ -84,6 +84,19 @@ The hub sends only one type of JSON string, containing the measurements that arr
 
 ### Bridging
 
+Bridging is the term the project uses to describe reforwarding of the messages from PAN to LAN and vice versa.
+
+Because the cube does not utilize any JSON parsers and implies lighter processing, the idea behind bridging is simplifying JSON strings into string with identifiers, that are described in the general documentaion page.
+
+Examples of bridging:
+
+```
+{ side: 1, func: 5, color: 0, target: 2 } --> s1f5c0t2
+```
+```
+s0h20t21 --> { side: 0, humidity: 20, temperature: 21 }
+```
+
 ### Data samples filtering
 
 Because of the strict UART timing and additional interference, some data samples arrive invalid. Therefore, hub performs simple sanity check for a data sample. In case the measurement seems to be invalid, the cube's side value is replaces with -1.<br>
@@ -97,4 +110,9 @@ if (sscanf(sample_str, "s%dh%dt%d", &current_side, &humidity, &temperature) != 3
 }
 ```
 
-The reason why the invalid messages are not dropped, is a potential oppotunity to use it for statistic. For instance, keeping track of interference peaks or calculating data loss percentage.
+The reason the invalid messages are not dropped, is a potential oppotunity to use it for statistic. For instance, keeping track of interference peaks or calculating data loss percentage.
+
+# Credit
+
+UART abstraction class: Keijo Länsikunnas, Metropolia University of Applied Sciences<br>
+JSON parser: [nhlohmann](https://github.com/nlohmann/json)
