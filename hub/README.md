@@ -50,17 +50,17 @@ The hub expects the data to arrive as a JSON string.<br>
 There are several different messages that can be sent to the hub.<br>
 
 Settings update:
-```json
+```js
 {
   side: 0-5,          // Target side to update
-  func: 0-5       // Function to map
+  func: 0-5           // Function to map
   color: uint32_t     // Color in decimal format
   target: int         // Target in decimal format
 }
 ```
 
 Weather update:
-```json
+```js
 {
   weather: 0-9        // New weather index
 }
@@ -74,7 +74,7 @@ Notification:
 ```
 
 The hub sends only one type of JSON string, containing the measurements that arrived via ZigBee:
-```json
+```js
 {
   side: 0-5,           // Current side
   humidity: 0-100      // Current humidity, %
