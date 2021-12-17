@@ -19,10 +19,10 @@
 
 /* Macros and global variables */
 #define TICKRATE_HZ          1000
-#define MQTT_IP              (char *)"18.198.188.151"
-#define MQTT_PORT            21883
-#define NETWORK_SSID         (char *)"V46D-1"
-#define NETWORK_PASS         (char *)"2483124831"
+#define MQTT_IP              (char *)"MQTT IP"
+#define MQTT_PORT            0
+#define NETWORK_SSID         (char *)"NETWORK SSID"
+#define NETWORK_PASS         (char *)"NETWORK PASS"
 #define MQTT_TOPIC_RECEIVE   (const char *)"/gyro/web"
 #define MQTT_TOPIC_SEND      (const char *)"/gyro/hub"
 #define MQTT_YIELD_TIME      100
