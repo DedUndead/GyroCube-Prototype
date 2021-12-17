@@ -41,3 +41,60 @@ XBee2 modules can be configured to operate with different wireless protocols usi
 ESP8266 shield provided by Metropolia University of Applied Sciences is a handy extension for the board. MQTT protocol is being used to communicate with the web, and the team members have already worked with ESP8266 and MQTT arduino-ported library for this hardware. This is another factor that helped to quickly implement the ideas in the code.
 
 # Software architecture
+
+The software provides abstraction layers for MQTT and UART interfaces. Main body of the program is constantly polling for ZigBee data. MQTT interface takes a callback function as a message handler, so no explicit polling is present.
+
+### MQTT data format
+
+The hub expects the data to arrive as a JSON string.<br>
+There are several different messages that can be sent to the hub.<br>
+
+Settings update:
+```
+{
+  side: 0-5,          // Target side to update
+  function: 0-5       // Function to map
+  color: uint32_t     // Color in decimal format
+  target: int         // Target in decimal format
+}
+```
+
+Weather update:
+```
+{
+  weather: 0-9        // New weather index
+}
+```
+
+Notification:
+```
+{
+  notif: true
+}
+```
+
+The hub sends only one type of JSON string, containing the measurements that arrived via ZigBee:
+```
+{
+  side: 0-5,           // Current side
+  humidity: 0-100      // Current humidity, %
+  temperature: -40-120 // Current temperature, C
+}
+```
+
+### Bridging
+
+### Data samples filtering
+
+Because of the strict UART timing and additional interference, some data samples arrive invalid. Therefore, hub performs simple sanity check for a data sample. In case the measurement seems to be invalid, the cube's side value is replaces with -1.<br>
+
+```
+if (sscanf(sample_str, "s%dh%dt%d", &current_side, &humidity, &temperature) != 3 ||
+  temperature < MIN_TEMP || current_side > MAX_SIDE) {
+  current_side = -1;
+  humidity = -1;
+  temperature = -1;
+}
+```
+
+The reason why the invalid messages are not dropped, is a potential oppotunity to use it for statistic. For instance, keeping track of interference peaks or calculating data loss percentage.
