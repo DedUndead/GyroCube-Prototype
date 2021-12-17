@@ -69,7 +69,7 @@ Honeywell sensors are of the highest quality. One of the main features is very l
 ##### Addressable LEDs - NeoPixel (WS2812b)
 One of the hardest challenges of the concept is to provide even light distribution to all of the sides. NeoPixel LEDs are very bright, considering its low power consumption, therefore they were considered as the main candidate during design phase.Even though none of the LEDs have different colors at the same time in the prototype, the features of addressing individual strip pieces were researched for further use in the project.
 
-#####  Vibration Motor - C1026B002F (WS2812b)
+#####  Vibration Motor - C1026B002F
 Simple vibration motor placed on one of the cube sides. 9000 rpm is a speed that is within mobile phone vibration range that most people are used to.
 
 # Software architecture
