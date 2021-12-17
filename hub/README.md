@@ -101,7 +101,7 @@ s0h20t21 --> { side: 0, humidity: 20, temperature: 21 }
 
 Because of the strict UART timing and additional interference, some data samples arrive invalid. Therefore, hub performs simple sanity check for a data sample. In case the measurement seems to be invalid, the cube's side value is replaces with -1.<br>
 
-```
+```c++
 if (sscanf(sample_str, "s%dh%dt%d", &current_side, &humidity, &temperature) != 3 ||
   temperature < MIN_TEMP || current_side > MAX_SIDE) {
   current_side = -1;
