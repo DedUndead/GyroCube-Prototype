@@ -74,12 +74,17 @@ Simple vibration motor placed on one of the cube sides. 9000 rpm is a speed that
 
 The software provides an abstraction layers for all the peripherals, state machine for handling function and side changing and main body for issuing events and managing communication.
 
+The code is written with the help of Pico SDK hardware libraries. Documentation and examples of Pico SDK usage are found in official [documentation](https://raspberrypi.github.io/pico-sdk-doxygen/).
+
+<b>Note:</b> In order to build the source code provided in the repository, Pico SDK path must be added to PICO_SDK_PATH cmake build/config environmental variables.
+
 <p align="center"><img src="https://i.imgur.com/uRmOFMd.png" alt="Concept overview"></p>
 <p align="center">Figure 3. Software architecture overview </p>
 
 ### Main body
 
-Main body performs accelerometer measurements, issues event ticks and polls for ZigBee data periodically.
+Main body performs accelerometer measurements, issues event ticks and polls for ZigBee data periodically.<br>
+Periodicity is implemeted using hardware timers.
 
 Table 2. Main body functionality description
 
@@ -90,4 +95,12 @@ Table 2. Main body functionality description
 | Send measurements and current side to hub          | Packet / 1000ms          |
 | Listen to Zigbee data                              | Polling with 10 ms delay |
 
-Periodicity is implemeted using hardware timers.
+Accelerometer measurements are checked with a simple running filter. The change of side is considered to be valid only if two consecutive samples represent the same measurement. When the cube is flipped, main body issues <b>eChange</b> event with new side value.
+
+State machine tick issues <b>eTick</b> event.
+
+Zigbee data analysis performs different action depending on the message. If change in setting is requested, state machine's member function for setting changed is called passing the data fetched from the message. Weather change acts in the similar way. The notification message issues <b>eNotify</b> event to the state machine.
+
+### State machine
+
+State machine source code is available in src/state_machine/Gyrocube.cpp
