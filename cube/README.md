@@ -104,3 +104,39 @@ Zigbee data analysis performs different action depending on the message. If chan
 ### State machine
 
 State machine source code is available in src/state_machine/Gyrocube.cpp
+
+State machine consists of seven states: startup state and six states for each induvidual function.<br>
+
+Settings are stored in the private array:<br>
+```
+typedef struct side_settings {
+    uint8_t function;
+    uint32_t color;
+    int target;
+} side_settings;
+side_settings settings[N_SIDES];
+```
+Function denotes index of the current function mapped to the side (in accordance to indexes in general documentation).<br>
+Color denotes the color used for the function if applicable.<br>
+Target denotes the target value for the function if applicable (for example target humidity).
+
+All "functional" states (states that describe one of the predefined functions) are stored in the member function pointer array:<br>
+
+```
+void (Gyrocube::*functional_states[N_SIDES])(const Event&);
+functional_states { 
+    &Gyrocube::state_idle,    &Gyrocube::state_lamp,
+    &Gyrocube::state_temp,    &Gyrocube::state_humid,
+    &Gyrocube::state_weather, &Gyrocube::state_notification
+}
+```
+
+As long as the user can map any function to any side, this set up allows to get into the required state for the side that the cube was placed on.
+Here is the example of such state switching:
+```
+case Event::eChange:
+    current_side = e.value;
+    set_state(settings[current_side].function);
+
+    break;
+```
