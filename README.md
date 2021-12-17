@@ -4,8 +4,10 @@ Detailed information on hub's hardware/software architecture can be found here: 
 Detailed information on cube's hardware/software architecture can be found here: [Click](https://github.com/DedUndead/GyroCube-Prototype/blob/readme/cube/README.md)<br>
 Detailed information on web's architecture can be found here:<br>
 
+Reading the documentation fully allows to understand the architectural decisions and the code better.
+
 #### Developers and contributors:
-<b>Pavel Arefyev</b>: Cube's HW/SW architecture, Hub's HW/SW architecture, Zigbee topology <br>
+<b>Pavel Arefyev</b>: Cube's HW/SW architecture, Hub's HW/SW architecture<br>
 <b>Joel Kontas</b>: Cube's HW/SW architecture, Zigbee topology<br>
 <b>Daniel Liberman</b>: Cube's HW/SW architecture, Web<br>
 <b>Alex Franko</b>: Web<br>
