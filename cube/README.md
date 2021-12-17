@@ -63,4 +63,14 @@ XBee2 modules can be configured to operate with different wireless protocols usi
 The name "GyroCube" comes from the fact, that gyroscope is  meant to be used in the device. However, for the prototype no special gestures were planned, so the accelerometer was enough to track the sides and changes.<br>
 I2C-ACC-8700 is a breakout board for FXOS8700CQ accelerometer/magnetometer chip. FXOS8700CQ provides wide functionality and application cases. Fast read mode configuration was utilized in this project. What's more, the chip has several embedded functions, including the orientation detection and other algorithms, that would require complicated processing. Some of the functions were tried out and put on hold, but FXOS8700CQ will definitely be used in later stages of the projects.
 
-##### Accelerometer - HIH6020-021-001
+##### Temperature/Humidity sensor - HIH6020-021-001
+Honeywell sensors are of the highest quality. One of the main features is very low power consumpion, that is achieved with auto-sleep mode when no data is requested. Because the architecture was designed to use I2C interface for all sensors, HIH6020 works on the same bus with the accelerometer, occupying less pins on the microcontroller. The resolution is decent for home-held device.
+
+##### Addressable LEDs - NeoPixel (WS2812b)
+One of the hardest challenges of the concept is to provide even light distribution to all of the sides. NeoPixel LEDs are very bright, considering its low power consumption, therefore they were considered as the main candidate during design phase.Even though none of the LEDs have different colors at the same time in the prototype, the features of addressing individual strip pieces were researched for further use in the project.
+
+#####  Vibration Motor - C1026B002F (WS2812b)
+Simple vibration motor placed on one of the cube sides. 9000 rpm is a speed that is within mobile phone vibration range that most people are used to.
+
+# Software architecture
+
