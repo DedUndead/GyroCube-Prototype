@@ -108,7 +108,7 @@ State machine source code is available in src/state_machine/Gyrocube.cpp
 State machine consists of seven states: a startup state and six states for each induvidual function.<br>
 
 Settings are stored in the private array:<br>
-```
+```c++
 typedef struct side_settings {
     uint8_t function;
     uint32_t color;
@@ -122,7 +122,7 @@ Target denotes the target value for the function if applicable (for example targ
 
 All "functional" states (states that describe one of the predefined functions) are stored in the member function pointer array:<br>
 
-```
+```c++
 void (Gyrocube::*functional_states[N_SIDES])(const Event&);
 functional_states { 
     &Gyrocube::state_idle,    &Gyrocube::state_lamp,
@@ -133,7 +133,7 @@ functional_states {
 
 As long as the user can map any function to any side, this set up allows to get into the required state for the side that the cube was placed on.
 Here is an example of such state switching:
-```
+```c++
 case Event::eChange:
     current_side = e.value;
     set_state(settings[current_side].function);
@@ -148,7 +148,7 @@ State machine can be initialized in a standalone mode, skipping the startup stat
 <b>Note:</b> In current implementation no acknowledgement is present, therefore the machine is initialized with standalone option.
 
 All the states check on tick if the settings were updated, adjusting the execution or switching to another state:
-```
+```c++
 case Event::eTick:
     update_measurements();
 
