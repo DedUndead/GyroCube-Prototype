@@ -77,7 +77,7 @@ The hub sends only one type of JSON string, containing the measurements that arr
 ```js
 {
   side: 0-5,           // Current side
-  humidity: 0-100      // Current humidity, %
+  humidity: 0-100,      // Current humidity, %
   temperature: -40-120 // Current temperature, C
 }
 ```
