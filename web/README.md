@@ -60,19 +60,19 @@ Then choose the feature that you want to change from the functionality options, 
 It’s important to note that each of these features have the possibility to choose a side that the setting will apply on. 
 In addition, by pressing submit, you’ll submit the new configuration to the cube.
 
-<b>Idle</b>
+<b>Idle</b><br>
 The idle feature is a feature whereas the name states that side will be idle. The idea of that feature is for later development, where the cube potentially has a wireless charger option. So, that side will be fixed into idle mode.
 
-<b>Simple color</b>
+<b>Simple color</b><br>
 The simple color as a smart lamp, where you can configure the side of operation in the cube and the color the LEDs will operate.
 
-<b>Temp tracker</b>
+<b>Temp tracker</b><br>
 The temperature tracker is used as a temperature measurement, where you configure the side of operation of the temperature tracker and your ideal temperature target. 
 
-<b>Humidity tracker</b>
+<b>Humidity tracker</b><br>
 The humidity tracker is used as a humidity measurement, where you configure the side of operation of the humidity tracker and your ideal humidity target.
 
-<b>Notifications</b>
+<b>Notifications</b><br>
 The notifications feature is used as a baseline for connecting that feature to email or to stocks platform to get notifications on certain changes. However, the current notifications are choosing a side of operation, and the way of notifying which are:
 -	Vibration
 -	Lights
