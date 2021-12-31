@@ -1,29 +1,13 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const flash = require('connect-flash')
-const session = require('express-session');
-const passport = require('passport');
-const mongoStore = require('connect-mongo');
-const mqtt = require('async-mqtt');
+const express = require('express') 
+const mqtt = require('async-mqtt') 
 const https = require('https')
-const { Server } = require("socket.io");
-const { createServer } = require("http");
-const app = express();
+const { Server } = require("socket.io") 
+const { createServer } = require("http") 
+const app = express() 
 
 // Socket set.up
-const httpServer = createServer(app);
-const io = new Server(httpServer);
-
-// Database keys
-const db = require('./config/keys').MongoURI;
-
-// Connection to the database's collections
-const Users = require('./models/Users');
-
-// Connects to the mongoDB
-mongoose.connect(db, { useNewUrlParser: true })
-    .then(() => console.log("MongoDB connected"))
-    .catch(err => console.log(err));
+const httpServer = createServer(app) 
+const io = new Server(httpServer) 
 
 // MQTT Config
 const mqtt_client = mqtt.connect('mqtt://18.198.188.151:21883')
@@ -46,9 +30,9 @@ mqtt_client.on('message', async function (topic, message) {
     let input = JSON.parse(message)
     console.log("Received: " + JSON.stringify(input))
     if  (input.side != -1) {
-        io.emit("update_from_cubus", input);
+        io.emit("update_from_cubus", input) 
     }
-});
+}) 
 
 // Dictionary for mapping weather to codes
 let weather_dict = {
@@ -83,25 +67,25 @@ let weather_dict = {
  **/
  async function api_get_location(city) {
 
-    let url = 'https://www.metaweather.com/api/location/search/?query=' + city;
+    let url = 'https://www.metaweather.com/api/location/search/?query=' + city 
     let retval = 'nil'
 
     return new Promise((resolve) => {
         https.get(url, response => {
-            let body = '';
+            let body = '' 
     
             response.on('data', chunk => {
                 if (Buffer.byteLength(chunk) > 2) {
-                    body += chunk;
+                    body += chunk 
                 }
-            });
+            }) 
     
             response.on('end', () => {
                 if( body != '') {
-                    retval = body;
+                    retval = body 
                 }
                 resolve(retval)
-            });
+            }) 
         })
     })
 }
@@ -114,7 +98,7 @@ let weather_dict = {
  **/
  async function get_woeid(city) {
 
-    let response = await api_get_location(city);
+    let response = await api_get_location(city) 
     if (response == 'nil') {
         console.log("City not found")
         return 'nil'
@@ -132,25 +116,25 @@ let weather_dict = {
  * @return weather data
  **/
  async function api_get_weather_data(woeid) {
-    let url = 'https://www.metaweather.com/api/location/' + woeid + '/' + get_current_date() + '/';
+    let url = 'https://www.metaweather.com/api/location/' + woeid + '/' + get_current_date() + '/' 
     let retval = 'nil'
 
     return new Promise((resolve) => {
         https.get(url, response => {
-            let body = '';
+            let body = '' 
     
             response.on('data', chunk => {
                 if (Buffer.byteLength(chunk) > 2) {
-                    body += chunk;
+                    body += chunk 
                 }
-            });
+            }) 
     
             response.on('end', () => {
                 if( body != '') {
-                    retval = body;
+                    retval = body 
                 }
                 resolve(retval)
-            });
+            }) 
         })
     })
 }
@@ -193,13 +177,13 @@ let weather_dict = {
 
 // WebSocket conf
 io.on("connection", (socket) => {
-    console.log("New connection: " + socket.id);
+    console.log("New connection: " + socket.id) 
 
     // Handle cube updates from client
     socket.on('update_cube_side', function (data) {
         mqtt_client.publish("/gyro/web", JSON.stringify(data))
         console.log("[+] Side update from client: " + JSON.stringify(data))
-    });
+    }) 
 
     // Handle weather updates from client
     socket.on('update_weather', async function (data) {
@@ -229,7 +213,7 @@ io.on("connection", (socket) => {
             io.emit("weather_update", weather_full)
             mqtt_client.publish("/gyro/web", JSON.stringify(weather_short))
         }
-    });
+    }) 
 
     socket.on('notif', async function (data) {
         console.log("[+] Notify cube...")
@@ -238,43 +222,18 @@ io.on("connection", (socket) => {
         }
         console.log('[+] Notif sent from ' + JSON.stringify(notification))
         mqtt_client.publish("/gyro/web", JSON.stringify(notification))
-    });
+    }) 
 
-});
-
-// Pasport config
-require('./config/passport')(passport);
+}) 
 
 // EJS
-app.use(express.static('./public/'));
-app.set('view engine', 'ejs');
+app.use(express.static('./public/')) 
+app.set('view engine', 'ejs') 
 
-// Session
-app.use(session({ 
-    secret: 'secret',
-    resave: true,
-    saveUninitialized: true,
-    store: mongoStore.create({ mongoUrl: db })
-}));
 
-// Passport middleware
-app.use(passport.initialize());
-app.use(passport.session());
+app.use('/', require('./routes/cube')) 
 
-// Connect flash
-app.use(flash());
-
-// Global vars
-app.use((req, res, next) => {
-    res.locals.success_msg = req.flash('success_msg');
-    res.locals.error_msg = req.flash('error_msg');
-    res.locals.error = req.flash('error');
-    next();
-});
-
-app.use('/', require('./routes/login'));
-
-const PORT = 3000; 
+const PORT = 3000  
 
 httpServer.listen(PORT, () => {
     console.log(`server running on port ${PORT}`)
