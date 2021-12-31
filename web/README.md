@@ -12,15 +12,17 @@ The web interface consists of setting configurations for the cube, the features 
 Each face will consist of its own unique options that the user could change. 
 
 # Technology stack
--	Frontend
+<b>Frontend</b>
 *	Tailwind
 *	EJS
 *	ThreeJS
--	Backend
+
+<b>Backend</b>
 *	NodeJS
 *	MQTT
 *	SocketIO
--	Modules
+
+<b>Modules</b>
 | Module	| Description				      		 	 |
 | ------------- | --------------------------------------------------------------:|			      
 | async-mqtt 	| JavaScript client library for MQTT protocol 		 	 |
