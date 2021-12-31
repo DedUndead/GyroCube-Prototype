@@ -24,7 +24,7 @@ Each face will consist of its own unique options that the user could change.
 
 <b>Modules</b>
 | Module	| Description				      		 	 |
-| ------------- | --------------------------------------------------------------:|			      
+| ------------- | :--------------------------------------------------------------|			      
 | async-mqtt 	| JavaScript client library for MQTT protocol 		 	 |
 | EJS		| Template language to allow JavaScript in HTML markup   	 |
 | socket.io 	| handles real time bidirectional event-based	         	 |
