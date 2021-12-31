@@ -39,7 +39,7 @@ The web interface currently consists of two main pages:
 -	Landing page – first figure
 -	Cube settings page – second figure
 
-<p align="center"><img src="https://i.imgur.com/Bd2FRYd.png" alt="Landing page"></p>
+<p align="center"><img src="https://i.imgur.com/Bd2FRYd.png" width=600 height=800 alt="Landing page"></p>
 <p align="center">Figure 1. Landing page</p>
 
 <p align="center"><img src="https://i.imgur.com/lDc07yR.png" alt="Cube settings page"></p>
