@@ -118,12 +118,12 @@ The format that is received from the HUB:
 ```
 
 The process is broken down on the following figures:
-<p align="center"><img src="https://i.imgur.com/BWRAK5G.png" width=400 height=200 alt="Submit data flow diagram"></p>
+<p align="center"><img src="https://i.imgur.com/BWRAK5G.png" width=500 height=300 alt="Submit data flow diagram"></p>
 <p align="center">Figure 3. Submit data flow</p>
 
-<p align="center"><img src="https://i.imgur.com/sVSoQUQ.png" width=400 height=200 alt="Receiving data flow diagram"></p>
+<p align="center"><img src="https://i.imgur.com/sVSoQUQ.png" width=500 height=300 alt="Receiving data flow diagram"></p>
 <p align="center">Figure 4. Receiving data flow</p>
 
-<p align="center"><img src="https://i.imgur.com/U4LVdYo.png" width=400 height=200 alt="Communication flow diagram"></p>
+<p align="center"><img src="https://i.imgur.com/U4LVdYo.png" width=500 height=300 alt="Communication flow diagram"></p>
 <p align="center">Figure 5. Communication flow</p>
 
