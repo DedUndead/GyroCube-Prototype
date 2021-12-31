@@ -1,20 +1,3 @@
-
-# GyroCube: Prototype
-
-Documentation in the root folder overviews the project.
-
-1. Detailed information on cube's hardware/software architecture can be found here: [CLICK](https://github.com/DedUndead/GyroCube-Prototype/blob/readme/cube/README.md)<br>
-2. Detailed information on hub's hardware/software architecture can be found here: [CLICK](https://github.com/DedUndead/GyroCube-Prototype/blob/readme/hub/README.md)<br>
-3. Detailed information on web's architecture can be found here:<br>
-
-Reading the documentation fully allows to understand the architectural decisions and the code better.
-
-#### Developers and contributors:
-<b>Pavel Arefyev</b>: Cube's HW/SW architecture, Hub's HW/SW architecture<br>
-<b>Joel Kontas</b>: Cube's HW/SW architecture, Zigbee topology<br>
-<b>Daniel Liberman</b>: Cube's HW/SW architecture, Web<br>
-<b>Alex Franko</b>: Web<br>
-
 # Description
 GyroCube is a Smart-Home accessory. The GyroCube is a multipurpose cube that can perform different functions based on the cube placing. 
 The functionality is changed by simply flipping the cube on the table. The GyroCube features are Smart lamp, temperature-/ humidity measurement, weather forecast, and email notifications. 
@@ -39,7 +22,7 @@ Each face will consist of its own unique options that the user could change.
 *	SocketIO
 -	Modules
 | Module	| Description				      		 	 |
-| ------------- |:--------------------------------------------------------------:|			      
+| ------------- | --------------------------------------------------------------:|			      
 | async-mqtt 	| JavaScript client library for MQTT protocol 		 	 |
 | EJS		| Template language to allow JavaScript in HTML markup   	 |
 | socket.io 	| handles real time bidirectional event-based	         	 |
@@ -54,10 +37,10 @@ The web interface currently consists of two main pages:
 -	Landing page – first figure
 -	Cube settings page – second figure
 
-<p align="center"><img src="https://imgur.com/Bd2FRYd" alt="Landing page"></p>
+<p align="center"><img src="https://i.imgur.com/Bd2FRYd.png" alt="Landing page"></p>
 <p align="center">Figure 1. Landing page</p>
 
-<p align="center"><img src="https://imgur.com/lDc07yR" alt="Cube settings page"></p>
+<p align="center"><img src="https://i.imgur.com/lDc07yR.png" alt="Cube settings page"></p>
 <p align="center">Figure 2. Cube settings page</p>
 
 
@@ -75,24 +58,31 @@ Then choose the feature that you want to change from the functionality options, 
 -	Humidity tracker
 -	Notifications
 -	Weather forecast
+
 It’s important to note that each of these features have the possibility to choose a side that the setting will apply on. 
 In addition, by pressing submit, you’ll submit the new configuration to the cube.
-Idle
+
+<b>Idle</b>
 The idle feature is a feature whereas the name states that side will be idle. The idea of that feature is for later development, where the cube potentially has a wireless charger option. So, that side will be fixed into idle mode.
-Simple color
+
+<b>Simple color</b>
 The simple color as a smart lamp, where you can configure the side of operation in the cube and the color the LEDs will operate.
-Temp tracker
+
+<b>Temp tracker</b>
 The temperature tracker is used as a temperature measurement, where you configure the side of operation of the temperature tracker and your ideal temperature target. 
-Humidity tracker
+
+<b>Humidity tracker</b>
 The humidity tracker is used as a humidity measurement, where you configure the side of operation of the humidity tracker and your ideal humidity target.
-Notifications
+
+<b>Notifications</b>
 The notifications feature is used as a baseline for connecting that feature to email or to stocks platform to get notifications on certain changes. However, the current notifications are choosing a side of operation, and the way of notifying which are:
 -	Vibration
 -	Lights
 -	Both
+
 In addition, the color of the lights when a notification is received. To check the functionality press PINGPONG. 
 
-Weather forecast
+<b>Weather forecast</b>
 The weather forecasts feature is used by setting a city where you want to check that locations’ weather. By setting a city and submitting the side where you want that feature to operate the cube will shine according to the weather condition.
 
 In addition to changing the features of the cube, it’s possible to get live feed from the cubes’ current settings, such as:
