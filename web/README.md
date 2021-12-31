@@ -80,7 +80,7 @@ The notifications feature is used as a baseline for connecting that feature to e
 
 In addition, the color of the lights when a notification is received. To check the functionality press PINGPONG. 
 
-<b>Weather forecast</b>
+<b>Weather forecast</b><br>
 The weather forecasts feature is used by setting a city where you want to check that locations’ weather. By setting a city and submitting the side where you want that feature to operate the cube will shine according to the weather condition.
 
 In addition to changing the features of the cube, it’s possible to get live feed from the cubes’ current settings, such as:
