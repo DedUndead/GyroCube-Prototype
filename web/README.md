@@ -27,7 +27,7 @@ Each face will consist of its own unique options that the user could change.
 | ------------- | :--------------------------------------------------------------|			      
 | async-mqtt 	| JavaScript client library for MQTT protocol 		 	 |
 | EJS		| Template language to allow JavaScript in HTML markup   	 |
-| socket.io 	| handles real time bidirectional event-based	         	 |
+| socket.io 	| Handles real time bidirectional event-based	         	 |
 | nodemon  	| module to assist NodeJS application development	 	 |
 | express 	| Minimal and flexible Node.js web application framework 	 |
 | ThreeJS 	| Creating and displaying animated 3D models based on WebGL	 |
