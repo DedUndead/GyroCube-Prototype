@@ -40,16 +40,12 @@ The web interface currently consists of two main pages:
 -	Cube settings page – second figure
 
 <p align="center"><img src="https://i.imgur.com/Bd2FRYd.png" width=800 height=600 alt="Landing page"></p>
-<p align="center"><small>Figure 1. Landing page</small></p>
+<p align="center">Figure 1. Landing page</p>
 
-<p align="center"><img src="https://i.imgur.com/lDc07yR.png" alt="Cube settings page"></p>
+<p align="center"><img src="https://i.imgur.com/lDc07yR.png" width=800 height=600 alt="Cube settings page"></p>
 <p align="center">Figure 2. Cube settings page</p>
 
 
-
-
-
-### Landing page
 When the user enters the web interface, he will be interacted with the landing page. The landing page consists of a description of the project, along with a toolbar ‘Home’ and ‘Settings’. The Home tab will redirect the user back to the landing page, whereas the settings tab will lead to the cube settings. 
 Settings
 Opening the ‘Settings’ tab it will open a drop-down menu that currently has only one cube. By clicking on “Cube” it will redirect the user to the cube settings configuration.
@@ -122,12 +118,12 @@ The format that is received from the HUB:
 ```
 
 The process is broken down on the following figures:
-<p align="center"><img src="https://imgur.com/5bvMFRL" alt="Submit data flow diagram"></p>
+<p align="center"><img src="https://imgur.com/5bvMFRL" width=800 height=600 alt="Submit data flow diagram"></p>
 <p align="center">Figure 3. Submit data flow</p>
 
-<p align="center"><img src="https://i.imgur.com/sVSoQUQ.png" alt="Receiving data flow diagram"></p>
+<p align="center"><img src="https://i.imgur.com/sVSoQUQ.png" width=800 height=600 alt="Receiving data flow diagram"></p>
 <p align="center">Figure 4. Receiving data flow</p>
 
-<p align="center"><img src="https://i.imgur.com/YDZe086.png" alt="Communication flow diagram"></p>
+<p align="center"><img src="https://i.imgur.com/U4LVdYo.png" width=800 height=600 alt="Communication flow diagram"></p>
 <p align="center">Figure 5. Communication flow</p>
 
