@@ -4,7 +4,7 @@ Documentation in the root folder overviews the project.
 
 1. Detailed information on cube's hardware/software architecture can be found here: [CLICK](https://github.com/DedUndead/GyroCube-Prototype/blob/readme/cube/README.md)<br>
 2. Detailed information on hub's hardware/software architecture can be found here: [CLICK](https://github.com/DedUndead/GyroCube-Prototype/blob/readme/hub/README.md)<br>
-3. Detailed information on web's architecture can be found here:<br>
+3. Detailed information on web's architecture can be found here:<br> [CLICK](https://github.com/DedUndead/GyroCube-Prototype/blob/master/web/README.md)<br>
 
 Reading the documentation fully allows to understand the architectural decisions and the code better.
 
