@@ -39,7 +39,7 @@ The current project presents a prototype for the idea.
 The main goal was to obtain general information about the technologies, that can potentially be used in the actual product and develop a proof of concept in a short period of time.
 The conclusions are discussed in the last section of the documentation. Comparing to the original concept, the implementation has limited functionality.
 
-<p align="center"><img src="https://imgur.com/Fm2VxYo" alt="Prototype picture"></p>
+<p align="center"><img src="https://i.imgur.com/Fm2VxYo.jpg" alt="Prototype picture"></p>
 <p align="center">Figure 3. Prototype picture</p>
 
 ### Features summary
