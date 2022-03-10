@@ -1,5 +1,5 @@
 // Initiate websockets
-const socket = io("localhost:3000");
+const socket = io("localhost:3000") 
 
 // Update cube info on the interface
 socket.on("update_from_cubus", (data) => {
@@ -9,7 +9,7 @@ socket.on("update_from_cubus", (data) => {
         mqtt_oneshot = false
         success_popup()
     }
-
+    
     let parsed = parse_cube_update(data)
     console.log('[+] DATA: ' + JSON.stringify(parsed))
 
@@ -17,20 +17,21 @@ socket.on("update_from_cubus", (data) => {
     document.getElementById('current_func').innerText = 'Active function: ' + parsed.func
     document.getElementById('current_tmp').innerText = 'Temperature: ' + parsed.temp
     document.getElementById('current_humidity').innerText = 'Humidity: ' + parsed.humi
-    document.getElementById('current_color').innerText = 'Color: ' + 'tba';
+    document.getElementById('current_color').innerText = ' ' 
 
     // Refresh mqtt timeout
     mqtt_timeout()
-});
+}) 
 
 // Update weather on the interface
 socket.on("weather_update", (data) => {
     if (data == 'err') {
-        error_popup(1);
+        error_popup(1) 
     }
     console.log("[+] Weather update: " + data)
-    document.getElementById('current_weather').innerText = 'Current_weather: ' + data
-});
+    document.getElementById('current_weather').innerText = 'Current weather: ' + data
+
+}) 
 
 /**
  * @function update_mqtt
@@ -39,9 +40,9 @@ socket.on("weather_update", (data) => {
  **/
 function update_mqtt(side_index, function_index, function_settings){
 	
-    let s = side_index;
-    let fi = function_index;
-    let fs = function_settings;
+    let s = side_index 
+    let fi = function_index 
+    let fs = function_settings 
 
 	let cube_state_update = {
 		side: s,

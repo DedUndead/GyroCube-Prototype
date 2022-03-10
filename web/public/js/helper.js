@@ -16,12 +16,12 @@ var weather_location = 'helsinki'
 
 // Default mapping of functions to sides
 var function_map = {
-    0: 'idler',
-    1: 'lamp',
-    2: 'thermometer',
-    3: 'humidboi',
-    4: 'forecast',
-    5: 'notifier'    
+    0: 'Idle',
+    1: 'Simple color',
+    2: 'Temp tracker',
+    3: 'Humidity tracker',
+    4: 'Weather',
+    5: 'Notifications'    
 }
 
 /**
@@ -86,7 +86,7 @@ function error_popup(code){
         popup_timer = setTimeout(function () {
             document.getElementById("popup").remove()
             document.getElementById("popup_container").remove()
-        }, popup_duration);
+        }, popup_duration) 
     }
 }
 
@@ -102,16 +102,16 @@ function success_popup(){
     clearInterval(weather_timer)
     weather_timer = setInterval(function () {
         update_weather
-    }, weather_interval);
+    }, weather_interval) 
 
     // Update function mappings to default
     function_map = {
-        0: 'idler',
-        1: 'lamp',
-        2: 'thermometer',
-        3: 'humidboi',
-        4: 'forecast',
-        5: 'notifier'      
+        0: 'Idle',
+        1: 'Simple color',
+        2: 'Temp tracker',
+        3: 'Humidity tracker',
+        4: 'Weather',
+        5: 'Notifications'    
     }
 
     let popup_container
@@ -146,7 +146,7 @@ function success_popup(){
     popup_timer = setTimeout(function () {
         document.getElementById("popup").remove()
         document.getElementById("popup_container").remove()
-    }, popup_duration);
+    }, popup_duration) 
 }
 
 /**
@@ -170,7 +170,19 @@ function mqtt_timeout(){
  * @return side value
  **/
  function get_side_by_id(element_id) {
-    let element = document.getElementById(element_id);
-    let side = + element.options[element.selectedIndex].value;
+    let element = document.getElementById(element_id) 
+    let side = + element.options[element.selectedIndex].value 
     return side - 1
 }
+
+const colorLerp = (color1, color2, percentage) => {
+    const [rStart, gStart, bStart] = [color1 & 0xff0000, color1 & 0xff00, color1 & 0xff] 
+    const [rDiff, gDiff, bDiff] = [
+      (color2 & 0xff0000) - rStart,
+      (color2 & 0xff00) - gStart,
+      (color2 & 0xff) - bStart] 
+  
+    return '#' + (Math.floor(rStart + rDiff * percentage) & 0xff0000
+      | Math.floor(gStart + gDiff * percentage) & 0xff00
+      | Math.floor(bStart + bDiff * percentage) & 0xff).toString(16).padStart(6, '0') 
+  } 
