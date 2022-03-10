@@ -4,7 +4,7 @@ Documentation in the root folder overviews the project.
 
 1. Detailed information on cube's hardware/software architecture can be found here: [CLICK](https://github.com/DedUndead/GyroCube-Prototype/blob/readme/cube/README.md)<br>
 2. Detailed information on hub's hardware/software architecture can be found here: [CLICK](https://github.com/DedUndead/GyroCube-Prototype/blob/readme/hub/README.md)<br>
-3. Detailed information on web's architecture can be found here:<br>
+3. Detailed information on web's architecture can be found here: [CLICK](https://github.com/DedUndead/GyroCube-Prototype/blob/master/web/README.md)<br>
 
 Reading the documentation fully allows to understand the architectural decisions and the code better.
 
@@ -39,7 +39,8 @@ The current project presents a prototype for the idea.
 The main goal was to obtain general information about the technologies, that can potentially be used in the actual product and develop a proof of concept in a short period of time.
 The conclusions are discussed in the last section of the documentation. Comparing to the original concept, the implementation has limited functionality.
 
-Picture of the project.
+<p align="center"><img src="https://i.imgur.com/GiuHPgV.jpg" alt="Prototype picture"></p>
+<p align="center">Figure 3. Prototype picture</p>
 
 ### Features summary
 *	One cube, one hub and web interface
@@ -56,7 +57,7 @@ Picture of the project.
 The links in the first section provide additional information about technologies used, justification for component choices and user manuals.<br>
 
 <p align="center"><img src="https://i.imgur.com/whUNJtT.png?1" alt="Project acrhitecture diagram"></p>
-<p align="center">Figure 3. Overall project architecture</p>
+<p align="center">Figure 4. Overall project architecture</p>
 
 ### Predefined functionality
 
@@ -113,7 +114,3 @@ Examples of messages:<br>
 `w0` to cube - weather changed to index 0<br>
 `n` to cube - notification arrived<br>
 `h30t25` to hub - humidity is 30%, temperature is 25 C
-
-
-# Discussion and conclusion
-
